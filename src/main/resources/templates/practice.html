@@ -6,16 +6,26 @@
     <title>Poker 役判定 1Player</title>
     <link th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}" rel="stylesheet" type="text/css" />
     <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}" type="text/javascript"></script>
+    <script th:src="@{/selectCard.js}" type="text/javascript"></script>
 </head>
 
 <body class="m-3">
     <h1>Poker 役判定 1Player</h1>
 
-    <img src="/image/clover/5" alt="NOT FOUND" width=100>
-    <img src="/image/heart/4" alt="NOT FOUND" width=100>
-    <img src="/image/diamond/3" alt="NOT FOUND" width=100>
-    <img src="/image/spade/13" alt="NOT FOUND" width=100>
-    <img src="/image/diamond/10" alt="NOT FOUND" width=100>
+    <img id="hand1" alt="NOT FOUND" width=100>
+    <img id="hand2" alt="NOT FOUND" width=100>
+    <hr>
+    <img id="board1" alt="NOT FOUND" width=100>
+    <img id="board2" alt="NOT FOUND" width=100>
+    <img id="board3" alt="NOT FOUND" width=100>
+    <img id="board4" alt="NOT FOUND" width=100>
+    <img id="board5" alt="NOT FOUND" width=100>
+
+    <br>
+
+    <form method="get" th:action="@{/enter}">
+        <input class="btn btn-primary" type="submit" value="答え">
+    </form>
 
 
 </body>
