@@ -7,6 +7,7 @@
     <link th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}" rel="stylesheet" type="text/css" />
     <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}" type="text/javascript"></script>
     <script th:src="@{/selectCard.js}" type="text/javascript"></script>
+    <script th:src="@{/judgeHand.js}" type="text/javascript"></script>
 </head>
 
 <body class="m-3">
@@ -21,11 +22,15 @@
     <img id="board4" alt="NOT FOUND" width=100>
     <img id="board5" alt="NOT FOUND" width=100>
 
-    <br>
+    <hr>
 
     <form method="get" th:action="@{/enter}">
         <input class="btn btn-primary" type="submit" value="答え">
     </form>
+
+    <hr>
+
+    <h2><span id = "judgeHand"></span></h2>
 
 
 </body>

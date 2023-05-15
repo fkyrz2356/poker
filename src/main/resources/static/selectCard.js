@@ -1,5 +1,5 @@
 window.onload = function() {
-    const suits = ["clover", "heart", "diamond", "spade"];
+    const suits = ["club", "heart", "diamond", "spade"];
     const numbers = Array.from({length: 13}, (_, i) => i + 1);
 
     // 全てのカードの組み合わせを生成
@@ -19,15 +19,22 @@ window.onload = function() {
         [allCards[i], allCards[j]] = [allCards[j], allCards[i]]; // Swap
     }
 
+    let hands = []
+
     // シャッフルされたカードの先頭から5枚を選ぶ
     for (let i = 1; i <= 2; i++) {
         const card = allCards[i - 1];
+        hands.push(card);
         document.getElementById('hand' + i).src = "/image/" + card.suit + "/" + card.number;
     }
-
+    
     // シャッフルされたカードの先頭から5枚を選ぶ
     for (let i = 3; i <= 7; i++) {
         const card = allCards[i - 1];
+        hands.push(card);
         document.getElementById('board' + (i - 2)).src = "/image/" + card.suit + "/" + card.number;
     }
+
+    judge(hands);
+    return;
 }
