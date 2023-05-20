@@ -1,40 +1,15 @@
-window.onload = function() {
-    const suits = ["club", "heart", "diamond", "spade"];
-    const numbers = Array.from({length: 13}, (_, i) => i + 1);
+function makeHands(){
+    let hands = [];
 
-    // 全てのカードの組み合わせを生成
-    const allCards = [];
-    for (const suit of suits) {
-        for (const number of numbers) {
-            allCards.push({
-                suit: suit,
-                number: number
-            });
-        }
-    }
+    hands.push({suit:imageTypeHand1, number:imageNumberHand1});
+    hands.push({suit:imageTypeHand2, number:imageNumberHand2});
+    hands.push({suit:imageTypeBoard1, number:imageNumberBoard1});
+    hands.push({suit:imageTypeBoard2, number:imageNumberBoard2});
+    hands.push({suit:imageTypeBoard3, number:imageNumberBoard3});
+    hands.push({suit:imageTypeBoard4, number:imageNumberBoard4});
+    hands.push({suit:imageTypeBoard5, number:imageNumberBoard5});
 
-    // 重複を避けるために、全てのカードをシャッフル
-    for (let i = allCards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [allCards[i], allCards[j]] = [allCards[j], allCards[i]]; // Swap
-    }
-
-    let hands = []
-
-    // シャッフルされたカードの先頭から5枚を選ぶ
-    for (let i = 1; i <= 2; i++) {
-        const card = allCards[i - 1];
-        hands.push(card);
-        //document.getElementById('hand' + i).src = "/image/" + card.suit + "/" + card.number;
-    }
-    
-    // シャッフルされたカードの先頭から5枚を選ぶ
-    for (let i = 3; i <= 7; i++) {
-        const card = allCards[i - 1];
-        hands.push(card);
-       // document.getElementById('board' + (i - 2)).src = "/image/" + card.suit + "/" + card.number;
-    }
-
+    // console.log(hands);
     judge(hands);
     return;
 }

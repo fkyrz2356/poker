@@ -11,7 +11,7 @@ function judge(targetCards){
     else if(IsSameNumber(targetCards, 2)["flag"]) ans = IsSameNumber(targetCards, 2);
     else ans = IsHighCard(targetCards);
 
-    document.getElementById("judgeHand").innerHTML = ans["name"];
+    document.getElementById("judgeHand").textContent = ans["name"];
     return;
 }
 
