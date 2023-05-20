@@ -11,9 +11,11 @@ function judge(targetCards){
     else if(IsSameNumber(targetCards, 2)["flag"]) ans = IsSameNumber(targetCards, 2);
     else ans = IsHighCard(targetCards);
 
-    document.getElementById("judgeHand").textContent = ans["name"];
+    document.getElementById("judgeHand").textContent = ans["description"];
     return;
 }
+
+let numtoChar = {1: 'A', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: '10', 11: 'J', 12: 'Q', 13: 'K', 14: 'A'};
 
 function modifyAndSort(arr, num, arr1 = []) {
 	// 配列の中の1をすべて14に変える
@@ -40,7 +42,7 @@ function IsFlush(targetCards){
     }
 
     for(var Key in suits ){
-        if(suits[Key].length >= 5) return  {"flag":true, "strength":6, "cards":modifyAndSort(suits[Key], 5), "name":"フラッシュ"};
+        if(suits[Key].length >= 5) return  {"flag":true, "strength":6, "cards":modifyAndSort(suits[Key], 5), "name":"フラッシュ", "description":"フラッシュ"};
     }
 
     return {"flag":false};
@@ -66,17 +68,17 @@ function IsSameNumber(targetCards, sameCount){
 			}
 			arr = arr.filter(item => item !== i);
 			if(numbers[i] == 2){
-				return {"flag":true, "strength":2, "cards":modifyAndSort(arr, 3, ans), "name":"ワンペア"}
+				return {"flag":true, "strength":2, "cards":modifyAndSort(arr, 3, ans), "name":`ワンペア`, "description":`${numtoChar[ans[0]]}-ワンペア`}
 			}else if(numbers[i] == 3){
 				if(targetCards[0]["number"] == i && targetCards[1]["number"] == i){
-					return {"flag":true, "strength":4, "cards":modifyAndSort(arr, 2, ans), "name":"セット"}
+					return {"flag":true, "strength":4, "cards":modifyAndSort(arr, 2, ans), "name":"セット", "description":`${numtoChar[ans[0]]}-セット`}
 				}else if(targetCards[0]["number"] == i || targetCards[1]["number"] == i){
-					return {"flag":true, "strength":4, "cards":modifyAndSort(arr, 2, ans), "name":"トリプス"}
+					return {"flag":true, "strength":4, "cards":modifyAndSort(arr, 2, ans), "name":"トリプス", "description":`${numtoChar[ans[0]]}-トリプス`}
 				}else{
-					return {"flag":true, "strength":4, "cards":modifyAndSort(arr, 2, ans), "name":"スリーカード"}
+					return {"flag":true, "strength":4, "cards":modifyAndSort(arr, 2, ans), "name":"スリーカード", "description":`${numtoChar[ans[0]]}-スリーカード`}
 				}
 			}else{
-				return {"flag":true, "strength":8, "cards":modifyAndSort(arr, 1, ans), "name":"クアッズ"}
+				return {"flag":true, "strength":8, "cards":modifyAndSort(arr, 1, ans), "name":"クアッズ", "description":`${numtoChar[ans[0]]}-クアッズ`}
 			}
 		}
 	}
@@ -113,7 +115,7 @@ function IsTwoPairs(targetCards ){
 		ans = ans.concat(ansCopy);
 
 		ans.sort((a, b) => b - a);
-		return {"flag":true, "strength":3, "cards":modifyAndSort(arr, 1, ans), "name":"ツーペア"};
+		return {"flag":true, "strength":3, "cards":modifyAndSort(arr, 1, ans), "name":"ツーペア", "description":`${numtoChar[ans[0]]}-${numtoChar[ans[2]]}-ツーペア`};
 	}
 	return {"flag":false};
 }
@@ -138,11 +140,11 @@ function IsFullHouse(targetCards){
 		if (a == 1) a = 14;
 		if (b == 1) b = 14;
 		if(a < b) [a, b] = [b, a];
-		return {"flag":true, "strength":7, "cards":[a, a, a, b, b], "name":"フルハウス"};
+		return {"flag":true, "strength":7, "cards":[a, a, a, b, b], "name":"フルハウス", "description":`${numtoChar[a]}-${numtoChar[b]}-フルハウス`};
 	}else if(sameCount[3].length >= 1 && sameCount[2].length >= 1){
 		sameCount[2].sort((a, b) => b - a);
 		var a = sameCount[3][0], b = sameCount[2][0];
-		return {"flag":true, "strength":7, "cards":[a, a, a, b, b], "name":"フルハウス"};
+		return {"flag":true, "strength":7, "cards":[a, a, a, b, b], "name":"フルハウス", "description":`${numtoChar[a]}-${numtoChar[b]}-フルハウス`};
 	}else{
 		return {"flag":false};
 	}
@@ -158,7 +160,7 @@ function IsStraight(targetCards){
 
 	for(var i = 10; i >= 1; i--){
 		if(numbers[i] >= 1 && numbers[i+1] >= 1 && numbers[i+2] >= 1 && numbers[i+3] >= 1 && numbers[i+4] >= 1){
-			return {"flag":true, "strength":5, "cards":[i+4, i+3, i+2, i+1, i], "name":"ストレート"};
+			return {"flag":true, "strength":5, "cards":[i+4, i+3, i+2, i+1, i], "name":"ストレート", "description":`${numtoChar[i+4]}ハイ-ストレート`};
 		}
 	}
 
@@ -176,7 +178,7 @@ function IsStraightFlush(targetCards){
 	Object.keys(suits).forEach(function (key) {
 		if(suits[key].length >= 5 && IsStraight(suits[key])["flag"]){
 			let ansCards = IsStraight(suits[key])["cards"];
-			ans = {"flag":true, "strength":9, "cards":ansCards, "name":"ストレートフラッシュ"};
+			ans = {"flag":true, "strength":9, "cards":ansCards, "name":"ストレートフラッシュ", "description":`${numtoChar[ansCards[0]]}ハイ-ストレートフラッシュ`};
 		}
 	});
 
@@ -192,7 +194,7 @@ function IsRoyalFlush(targetCards){
 	}
 
 	if(IsStraightFlush(cards)["flag"]){
-		return {"flag":true, "strength":10, "cards":[14, 13, 12, 11, 10], "name":"ロイヤルストレートフラッシュ"};
+		return {"flag":true, "strength":10, "cards":[14, 13, 12, 11, 10], "name":"ロイヤルストレートフラッシュ", "description":`ロイヤルストレートフラッシュ`};
 	}else{
 		return {"flag":false};
 	}
@@ -205,5 +207,5 @@ function IsHighCard(targetCards){
 		else ary.push(14);
 	}
 	ary.sort((a, b) => b - a);
-	return {"flag":true, "strength":1, "cards":modifyAndSort(ary, 5), "name":"ハイカード"};
+	return {"flag":true, "strength":1, "cards":modifyAndSort(ary, 5), "name":"ハイカード", "description":`${numtoChar[ary[0]]}-ハイカード`};
 }
