@@ -6,31 +6,50 @@
     <title>Poker 役判定 1Player</title>
     <link th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}" rel="stylesheet" type="text/css" />
     <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}" type="text/javascript"></script>
-    <script th:src="@{/selectCard.js}" type="text/javascript"></script>
+    <!--<script th:src="@{/selectCard.js}" type="text/javascript"></script>
     <script th:src="@{/judgeHand.js}" type="text/javascript"></script>
-    <script th:src="@{/event.js}" type="text/javascript"></script>
+    <script th:src="@{/event.js}" type="text/javascript"></script>-->
 </head>
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-      var imageType = /*[[${imageType}]]*/ 'default';
-      console.log(imageType);
+        var imageTypeHand1 = /*[[${imageTypeHand1}]]*/ 'default';
+        var imageNumberHand1 = /*[[${imageNumberHand1}]]*/ 'default';
+        var imageTypeHand2 = /*[[${imageTypeHand2}]]*/ 'default';
+        var imageNumberHand2 = /*[[${imageNumberHand2}]]*/ 'default';
+        var imageTypeBoard1 = /*[[${imageTypeBoard1}]]*/ 'default';
+        var imageNumberBoard1 = /*[[${imageNumberBoard1}]]*/ 'default';
+        var imageTypeBoard2 = /*[[${imageTypeBoard2}]]*/ 'default';
+        var imageNumberBoard2 = /*[[${imageNumberBoard2}]]*/ 'default';
+        var imageTypeBoard3 = /*[[${imageTypeBoard3}]]*/ 'default';
+        var imageNumberBoard3 = /*[[${imageNumberBoard3}]]*/ 'default';
+        var imageTypeBoard4 = /*[[${imageTypeBoard4}]]*/ 'default';
+        var imageNumberBoard4 = /*[[${imageNumberBoard4}]]*/ 'default';
+        var imageTypeBoard5 = /*[[${imageTypeBoard5}]]*/ 'default';
+        var imageNumberBoard5 = /*[[${imageNumberBoard5}]]*/ 'default';
     /*]]>*/
+
+    console.log(imageTypeHand1, imageNumberHand1);
+    console.log(imageTypeHand2, imageNumberHand2);
+    console.log(imageTypeBoard1, imageNumberBoard1);
+    console.log(imageTypeBoard2, imageNumberBoard2);
+    console.log(imageTypeBoard3, imageNumberBoard3);
+    console.log(imageTypeBoard4, imageNumberBoard4);
+    console.log(imageTypeBoard5, imageNumberBoard5);
 </script>
 
 <body class="m-3">
     <h1>Poker 役判定練習</h1>
     <p>上2枚がハンド、下5枚がボードです。<br>PCの方は左クリックもしくはEnterキーで、スマホの方はタップで答えを見たり、次の問題に進めます。</p>
     <hr>
-    <img th:src="@{'/card/' + ${imageType} + '/' + ${imageNumber} + '.png'}" width=100 />
-    <img id="hand1" alt="Loading…" width=100>
-    <img id="hand2" alt="Loading…" width=100>
+    <img th:src="@{'/card/' + ${imageTypeHand1} + '/' + ${imageNumberHand1} + '.png'}" alt="Loading…" width=100>
+    <img th:src="@{'/card/' + ${imageTypeHand2} + '/' + ${imageNumberHand2} + '.png'}" alt="Loading…" width=100>
     <hr>
-    <img id="board1" alt="Loading…" width=100>
-    <img id="board2" alt="Loading…" width=100>
-    <img id="board3" alt="Loading…" width=100>
-    <img id="board4" alt="Loading…" width=100>
-    <img id="board5" alt="Loading…" width=100>
+    <img th:src="@{'/card/' + ${imageTypeBoard1} + '/' + ${imageNumberBoard1} + '.png'}" alt="Test…" width=100>
+    <img th:src="@{'/card/' + ${imageTypeBoard2} + '/' + ${imageNumberBoard2} + '.png'}" alt="Test…" width=100>
+    <img th:src="@{'/card/' + ${imageTypeBoard3} + '/' + ${imageNumberBoard3} + '.png'}" alt="Test…" width=100>
+    <img th:src="@{'/card/' + ${imageTypeBoard4} + '/' + ${imageNumberBoard4} + '.png'}" alt="Test…" width=100>
+    <img th:src="@{'/card/' + ${imageTypeBoard5} + '/' + ${imageNumberBoard5} + '.png'}" alt="Test…" width=100>
 
     <hr>
 

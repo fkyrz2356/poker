@@ -25,14 +25,14 @@ window.onload = function() {
     for (let i = 1; i <= 2; i++) {
         const card = allCards[i - 1];
         hands.push(card);
-        document.getElementById('hand' + i).src = "/image/" + card.suit + "/" + card.number;
+        //document.getElementById('hand' + i).src = "/image/" + card.suit + "/" + card.number;
     }
     
     // シャッフルされたカードの先頭から5枚を選ぶ
     for (let i = 3; i <= 7; i++) {
         const card = allCards[i - 1];
         hands.push(card);
-        document.getElementById('board' + (i - 2)).src = "/image/" + card.suit + "/" + card.number;
+       // document.getElementById('board' + (i - 2)).src = "/image/" + card.suit + "/" + card.number;
     }
 
     judge(hands);
