@@ -11,8 +11,9 @@ function judge(targetCards){
     else if(IsSameNumber(targetCards, 2)["flag"]) ans = IsSameNumber(targetCards, 2);
     else ans = IsHighCard(targetCards);
 
-    document.getElementById("judgeHand").textContent = ans["description"];
-    return;
+	console.log(ans["description"]);
+    //document.getElementById("judgeHand").textContent = ans["description"];
+    return ans;
 }
 
 let numtoChar = {1: 'A', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: '10', 11: 'J', 12: 'Q', 13: 'K', 14: 'A'};
@@ -208,4 +209,20 @@ function IsHighCard(targetCards){
 	}
 	ary.sort((a, b) => b - a);
 	return {"flag":true, "strength":1, "cards":modifyAndSort(ary, 5), "name":"ハイカード", "description":`${numtoChar[ary[0]]}-ハイカード`};
+}
+
+function isWinner(hands){
+	if(hands[0]["strength"] < hands[1]["strength"]){
+		return '<font color="blue">Player 2</font>';
+	}else if(hands[0]["strength"] > hands[1]["strength"]){
+		return '<font color="red">Player 1</font>';
+	}
+	for(let i = 0; i < 5; ++i){
+		if(hands[0]["cards"][i] < hands[1]["cards"][i]){
+			return '<font color="blue">Player 2</font>';
+		}else if(hands[0]["cards"][i] > hands[1]["cards"][i]){
+			return '<font color="red">Player 1</font>';
+		}
+	}
+	return "Chop";
 }

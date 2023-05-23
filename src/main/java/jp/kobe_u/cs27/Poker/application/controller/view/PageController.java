@@ -43,7 +43,7 @@ public class PageController {
 	public String pageController2(Model model) {
 		List<Card> allCards = cardService.generateAllCards();
 
-		String[] hands = {"Hand1", "Hand2"};
+		String[] hands = {"Hand11", "Hand12", "Hand21", "Hand22"};
 		String[] boards = {"Board1", "Board2", "Board3", "Board4", "Board5"};
 
 		for (int i = 0; i < hands.length; i++) {

@@ -1,7 +1,8 @@
 // 関数定義
 function ReloadOrAnsDisplay() {
-    if(document.getElementById('judgeHand').style.display == 'none'){
-        document.getElementById('judgeHand').style.display = 'block';
+    if(document.getElementById('judgeHandmain').style.display == 'none'){
+        document.getElementById('judgeHandmain').style.display = 'block';
+        document.getElementById('judgeHandsub').style.display = 'block';
     }else{
         location.reload();
     }
