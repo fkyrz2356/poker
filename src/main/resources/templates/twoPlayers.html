@@ -3,9 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Poker 役判定 1Player</title>
+    <meta name="viewport" content="width=550, initial-scale=1">
+    <title>Poker 役判定 2Players</title>
     <link th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}" rel="stylesheet" type="text/css" />
     <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}" type="text/javascript"></script>
+    <link th:href="@{/CSS.css}" rel="stylesheet" type="text/css" />
     <script th:src="@{/selectCard.js}" type="text/javascript"></script>
     <script th:src="@{/judgeHand.js}" type="text/javascript"></script>
     <script th:src="@{/event.js}" type="text/javascript"></script>
@@ -65,8 +67,15 @@
         document.getElementById('judgeHandmain').style.display = 'none';
         document.getElementById('judgeHandsub').style.display = 'none';
         makeHands(2);
-    </script>
 
+        function resize() {
+            var scaleFactor = window.innerWidth / 800;
+            document.body.style.transform = 'scale(' + scaleFactor + ')';
+        }
+
+        window.onresize = resize; // ウィンドウがリサイズされたときにresize関数を呼び出します
+        resize(); // ページが読み込まれたときにresize関数を呼び出します
+    </script>
 
 </body>
 
