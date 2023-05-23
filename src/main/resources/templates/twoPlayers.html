@@ -69,7 +69,13 @@
         makeHands(2);
 
         function resize() {
-            var scaleFactor = window.innerWidth / 800;
+            var scaleFactorX = window.innerWidth / 600;
+            var scaleFactorY = window.innerHeight / 1200;
+            console.log(scaleFactorX, scaleFactorY);
+            var scaleFactor = Math.max(scaleFactorX, scaleFactorY);
+
+            if (scaleFactor > 1) scaleFactor = 1;
+
             document.body.style.transform = 'scale(' + scaleFactor + ')';
         }
 
