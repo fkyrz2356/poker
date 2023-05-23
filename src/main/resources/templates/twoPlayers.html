@@ -15,8 +15,8 @@
     <h1>Poker 役判定練習</h1>
     <p>上2枚がハンド、下5枚がボードです。<br>PCの方は左クリックもしくはEnterキーで、スマホの方はタップで答えを見たり、次の問題に進めます。</p>
     <hr>
-    <img th:src="@{'/card/' + ${imageTypeHand11} + '/' + ${imageNumberHand11} + '.png'}" alt="Loading…" width=100>
-    <img th:src="@{'/card/' + ${imageTypeHand12} + '/' + ${imageNumberHand12} + '.png'}" alt="Loading…" width=100>
+    <img th:src="@{'/card/' + ${imageTypeHand1} + '/' + ${imageNumberHand1} + '.png'}" alt="Loading…" width=100>
+    <img th:src="@{'/card/' + ${imageTypeHand2} + '/' + ${imageNumberHand2} + '.png'}" alt="Loading…" width=100>
     <hr>
     <img th:src="@{'/card/' + ${imageTypeBoard1} + '/' + ${imageNumberBoard1} + '.png'}" alt="Loading…" width=100>
     <img th:src="@{'/card/' + ${imageTypeBoard2} + '/' + ${imageNumberBoard2} + '.png'}" alt="Loading…" width=100>
@@ -30,10 +30,10 @@
 
     <script th:inline="javascript">
         /*<![CDATA[*/
-            var imageTypeHand11 = /*[[${imageTypeHand11}]]*/ 'default';
-            var imageNumberHand11 = /*[[${imageNumberHand11}]]*/ 'default';
-            var imageTypeHand12 = /*[[${imageTypeHand12}]]*/ 'default';
-            var imageNumberHand12 = /*[[${imageNumberHand12}]]*/ 'default';
+            var imageTypeHand1 = /*[[${imageTypeHand1}]]*/ 'default';
+            var imageNumberHand1 = /*[[${imageNumberHand1}]]*/ 'default';
+            var imageTypeHand2 = /*[[${imageTypeHand2}]]*/ 'default';
+            var imageNumberHand2 = /*[[${imageNumberHand2}]]*/ 'default';
             var imageTypeBoard1 = /*[[${imageTypeBoard1}]]*/ 'default';
             var imageNumberBoard1 = /*[[${imageNumberBoard1}]]*/ 'default';
             var imageTypeBoard2 = /*[[${imageTypeBoard2}]]*/ 'default';
@@ -47,9 +47,9 @@
         /*]]>*/
     
         document.getElementById('judgeHand').style.display = 'none';
-        makeHands(1);
-        // console.log(imageTypeHand11, imageNumberHand11);
-        // console.log(imageTypeHand12, imageNumberHand12);
+        makeHands();
+        // console.log(imageTypeHand1, imageNumberHand1);
+        // console.log(imageTypeHand2, imageNumberHand2);
         // console.log(imageTypeBoard1, imageNumberBoard1);
         // console.log(imageTypeBoard2, imageNumberBoard2);
         // console.log(imageTypeBoard3, imageNumberBoard3);

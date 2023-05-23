@@ -20,7 +20,27 @@ public class PageController {
     }
 
     @GetMapping("/")
-	public String showLandingPage(Model model) {
+	public String pageController1(Model model) {
+		List<Card> allCards = cardService.generateAllCards();
+
+		String[] hands = {"Hand11", "Hand12"};
+		String[] boards = {"Board1", "Board2", "Board3", "Board4", "Board5"};
+
+		for (int i = 0; i < hands.length; i++) {
+			model.addAttribute("imageType" + hands[i], allCards.get(i).getImageType());
+			model.addAttribute("imageNumber" + hands[i], allCards.get(i).getImageNumber());
+		}
+
+		for (int i = 0; i < boards.length; i++) {
+			model.addAttribute("imageType" + boards[i], allCards.get(i + hands.length).getImageType());
+			model.addAttribute("imageNumber" + boards[i], allCards.get(i + hands.length).getImageNumber());
+		}
+
+		return "practice";
+	}
+
+	@GetMapping("/test")
+	public String pageController2(Model model) {
 		List<Card> allCards = cardService.generateAllCards();
 
 		String[] hands = {"Hand1", "Hand2"};
@@ -36,7 +56,7 @@ public class PageController {
 			model.addAttribute("imageNumber" + boards[i], allCards.get(i + hands.length).getImageNumber());
 		}
 
-		return "practice";
+		return "twoPlayers";
 	}
 
 }

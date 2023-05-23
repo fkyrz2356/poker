@@ -1,14 +1,14 @@
-function makeHands(){
+function makeHands(playerNum){
     let hands = [];
 
-    hands.push({suit:imageTypeHand1, number:imageNumberHand1});
-    hands.push({suit:imageTypeHand2, number:imageNumberHand2});
-    hands.push({suit:imageTypeBoard1, number:imageNumberBoard1});
-    hands.push({suit:imageTypeBoard2, number:imageNumberBoard2});
-    hands.push({suit:imageTypeBoard3, number:imageNumberBoard3});
-    hands.push({suit:imageTypeBoard4, number:imageNumberBoard4});
-    hands.push({suit:imageTypeBoard5, number:imageNumberBoard5});
-
+    for(let i=1; i <= playerNum; i++){
+        hands.push({suit: eval('imageTypeHand' + i + '1'), number: eval('imageNumberHand' + i + '1')});
+        hands.push({suit: eval('imageTypeHand' + i + '2'), number: eval('imageNumberHand' + i + '2')});
+    }    
+    for(let i=1; i <= 5; i++){
+        hands.push({suit: eval('imageTypeBoard' + i), number: eval('imageNumberBoard' + i)});
+    }
+    
     // console.log(hands);
     judge(hands);
     return;
