@@ -4,6 +4,7 @@ function ReloadOrAnsDisplay() {
         document.getElementById('judgeHandmain').style.display = 'block';
         var element = document.getElementById('judgeHandsub');
         if(element) element.style.display = 'block';
+        highlight();
     }else{
         location.reload();
     }
@@ -26,3 +27,7 @@ window.addEventListener('keydown', function(e) {
         ReloadOrAnsDisplay();
     }
 });
+
+function highlight(){
+    
+}

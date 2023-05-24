@@ -20,11 +20,11 @@ public class PageController {
     }
 
     @GetMapping("/")
-	public String pageController1(Model model) {
+    public String pageController1(Model model) {
 		List<Card> allCards = cardService.generateAllCards();
 
-		String[] hands = {"Hand11", "Hand12"};
-		String[] boards = {"Board1", "Board2", "Board3", "Board4", "Board5"};
+		String[] hands = {"Hand0111", "Hand0112"};
+		String[] boards = {"Board011", "Board012", "Board013", "Board014", "Board015"};
 
 		for (int i = 0; i < hands.length; i++) {
 			model.addAttribute("imageType" + hands[i], allCards.get(i).getImageType());
@@ -37,14 +37,14 @@ public class PageController {
 		}
 
 		return "practice";
-	}
+    }
 
-	@GetMapping("/test")
-	public String pageController2(Model model) {
+    @GetMapping("/test")
+    public String pageController2(Model model) {
 		List<Card> allCards = cardService.generateAllCards();
 
-		String[] hands = {"Hand11", "Hand12", "Hand21", "Hand22"};
-		String[] boards = {"Board1", "Board2", "Board3", "Board4", "Board5"};
+		String[] hands = {"Hand0111", "Hand0112", "Hand0121", "Hand0122"};
+		String[] boards = {"Board011", "Board012", "Board013", "Board014", "Board015"};
 
 		for (int i = 0; i < hands.length; i++) {
 			model.addAttribute("imageType" + hands[i], allCards.get(i).getImageType());
@@ -57,6 +57,6 @@ public class PageController {
 		}
 
 		return "twoPlayers";
-	}
+    }
 
 }

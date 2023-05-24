@@ -25,16 +25,16 @@
     <h1>Poker 役判定練習 2Players</h1>
     <p>赤色カードがPlayer1のハンド、青色カードがPlayer2のハンド、下5枚がボードです。<br>PCの方は左クリックもしくはEnterキーで、スマホの方はタップで答えを見たり、次の問題に進めます。</p>
     <hr>
-    <img class="imageRed" th:src="@{'/card/' + ${imageTypeHand11} + '/' + ${imageNumberHand11} + '.png'}" alt="Loading…" width=100>
-    <img class="imageRed" th:src="@{'/card/' + ${imageTypeHand12} + '/' + ${imageNumberHand12} + '.png'}" alt="Loading…" width=100 style="margin-right: 104px;">
-    <img class="imageBlue" th:src="@{'/card/' + ${imageTypeHand21} + '/' + ${imageNumberHand21} + '.png'}" alt="Loading…" width=100>
-    <img class="imageBlue" th:src="@{'/card/' + ${imageTypeHand22} + '/' + ${imageNumberHand22} + '.png'}" alt="Loading…" width=100>
+    <img class="imageRed" th:src="@{'/card/' + ${imageTypeHand0111} + '/' + ${imageNumberHand0111} + '.png'}" alt="Loading…" width=100>
+    <img class="imageRed" th:src="@{'/card/' + ${imageTypeHand0112} + '/' + ${imageNumberHand0112} + '.png'}" alt="Loading…" width=100 style="margin-right: 104px;">
+    <img class="imageBlue" th:src="@{'/card/' + ${imageTypeHand0121} + '/' + ${imageNumberHand0121} + '.png'}" alt="Loading…" width=100>
+    <img class="imageBlue" th:src="@{'/card/' + ${imageTypeHand0122} + '/' + ${imageNumberHand0122} + '.png'}" alt="Loading…" width=100>
     <hr>
-    <img th:src="@{'/card/' + ${imageTypeBoard1} + '/' + ${imageNumberBoard1} + '.png'}" alt="Loading…" width=100>
-    <img th:src="@{'/card/' + ${imageTypeBoard2} + '/' + ${imageNumberBoard2} + '.png'}" alt="Loading…" width=100>
-    <img th:src="@{'/card/' + ${imageTypeBoard3} + '/' + ${imageNumberBoard3} + '.png'}" alt="Loading…" width=100>
-    <img th:src="@{'/card/' + ${imageTypeBoard4} + '/' + ${imageNumberBoard4} + '.png'}" alt="Loading…" width=100>
-    <img th:src="@{'/card/' + ${imageTypeBoard5} + '/' + ${imageNumberBoard5} + '.png'}" alt="Loading…" width=100>
+    <img th:src="@{'/card/' + ${imageTypeBoard011} + '/' + ${imageNumberBoard011} + '.png'}" alt="Loading…" width=100>
+    <img th:src="@{'/card/' + ${imageTypeBoard012} + '/' + ${imageNumberBoard012} + '.png'}" alt="Loading…" width=100>
+    <img th:src="@{'/card/' + ${imageTypeBoard013} + '/' + ${imageNumberBoard013} + '.png'}" alt="Loading…" width=100>
+    <img th:src="@{'/card/' + ${imageTypeBoard014} + '/' + ${imageNumberBoard014} + '.png'}" alt="Loading…" width=100>
+    <img th:src="@{'/card/' + ${imageTypeBoard015} + '/' + ${imageNumberBoard015} + '.png'}" alt="Loading…" width=100>
 
     <hr>
 
@@ -43,29 +43,29 @@
 
     <script th:inline="javascript">
         /*<![CDATA[*/
-            var imageTypeHand11 = /*[[${imageTypeHand11}]]*/ 'default';
-            var imageNumberHand11 = /*[[${imageNumberHand11}]]*/ 'default';
-            var imageTypeHand12 = /*[[${imageTypeHand12}]]*/ 'default';
-            var imageNumberHand12 = /*[[${imageNumberHand12}]]*/ 'default';
-            var imageTypeHand21 = /*[[${imageTypeHand21}]]*/ 'default';
-            var imageNumberHand21 = /*[[${imageNumberHand21}]]*/ 'default';
-            var imageTypeHand22 = /*[[${imageTypeHand22}]]*/ 'default';
-            var imageNumberHand22 = /*[[${imageNumberHand22}]]*/ 'default';
-            var imageTypeBoard1 = /*[[${imageTypeBoard1}]]*/ 'default';
-            var imageNumberBoard1 = /*[[${imageNumberBoard1}]]*/ 'default';
-            var imageTypeBoard2 = /*[[${imageTypeBoard2}]]*/ 'default';
-            var imageNumberBoard2 = /*[[${imageNumberBoard2}]]*/ 'default';
-            var imageTypeBoard3 = /*[[${imageTypeBoard3}]]*/ 'default';
-            var imageNumberBoard3 = /*[[${imageNumberBoard3}]]*/ 'default';
-            var imageTypeBoard4 = /*[[${imageTypeBoard4}]]*/ 'default';
-            var imageNumberBoard4 = /*[[${imageNumberBoard4}]]*/ 'default';
-            var imageTypeBoard5 = /*[[${imageTypeBoard5}]]*/ 'default';
-            var imageNumberBoard5 = /*[[${imageNumberBoard5}]]*/ 'default';
+            var imageTypeHand0111 = /*[[${imageTypeHand0111}]]*/ 'default';
+            var imageNumberHand0111 = /*[[${imageNumberHand0111}]]*/ 'default';
+            var imageTypeHand0112 = /*[[${imageTypeHand0112}]]*/ 'default';
+            var imageNumberHand0112 = /*[[${imageNumberHand0112}]]*/ 'default';
+            var imageTypeHand0121 = /*[[${imageTypeHand0121}]]*/ 'default';
+            var imageNumberHand0121 = /*[[${imageNumberHand0121}]]*/ 'default';
+            var imageTypeHand0122 = /*[[${imageTypeHand0122}]]*/ 'default';
+            var imageNumberHand0122 = /*[[${imageNumberHand0122}]]*/ 'default';
+            var imageTypeBoard011 = /*[[${imageTypeBoard011}]]*/ 'default';
+            var imageNumberBoard011 = /*[[${imageNumberBoard011}]]*/ 'default';
+            var imageTypeBoard012 = /*[[${imageTypeBoard012}]]*/ 'default';
+            var imageNumberBoard012 = /*[[${imageNumberBoard012}]]*/ 'default';
+            var imageTypeBoard013 = /*[[${imageTypeBoard013}]]*/ 'default';
+            var imageNumberBoard013 = /*[[${imageNumberBoard013}]]*/ 'default';
+            var imageTypeBoard014 = /*[[${imageTypeBoard014}]]*/ 'default';
+            var imageNumberBoard014 = /*[[${imageNumberBoard014}]]*/ 'default';
+            var imageTypeBoard015 = /*[[${imageTypeBoard015}]]*/ 'default';
+            var imageNumberBoard015 = /*[[${imageNumberBoard015}]]*/ 'default';
         /*]]>*/
     
         document.getElementById('judgeHandmain').style.display = 'none';
         document.getElementById('judgeHandsub').style.display = 'none';
-        makeHands(2);        
+        makeHands(1, 2);        
     </script>
 
 </body>
