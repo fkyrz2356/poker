@@ -1,40 +1,23 @@
-window.onload = function() {
-    const suits = ["club", "heart", "diamond", "spade"];
-    const numbers = Array.from({length: 13}, (_, i) => i + 1);
-
-    // 全てのカードの組み合わせを生成
-    const allCards = [];
-    for (const suit of suits) {
-        for (const number of numbers) {
-            allCards.push({
-                suit: suit,
-                number: number
-            });
+function makeHands(playerNum){
+    let res = [];
+    for(let i=1; i <= playerNum; i++){
+        let hands = [];
+        hands.push({suit: eval('imageTypeHand' + i + '1'), number: Number(eval('imageNumberHand' + i + '1'))});
+        hands.push({suit: eval('imageTypeHand' + i + '2'), number: Number(eval('imageNumberHand' + i + '2'))});
+        for(let j=1; j <= 5; j++){
+            hands.push({suit: eval('imageTypeBoard' + j), number: Number(eval('imageNumberBoard' + j))});
         }
-    }
+        console.log(hands);
+        res.push(judge(hands));
+    }    
 
-    // 重複を避けるために、全てのカードをシャッフル
-    for (let i = allCards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [allCards[i], allCards[j]] = [allCards[j], allCards[i]]; // Swap
-    }
-
-    let hands = []
-
-    // シャッフルされたカードの先頭から5枚を選ぶ
-    for (let i = 1; i <= 2; i++) {
-        const card = allCards[i - 1];
-        hands.push(card);
-        document.getElementById('hand' + i).src = "/image/" + card.suit + "/" + card.number;
+    console.log(res);
+    if(playerNum == 1){
+        document.getElementById("judgeHandmain").innerHTML = `${res[0]["description"]}`;
+    }else{
+        document.getElementById("judgeHandmain").innerHTML = `Winner : ${isWinner(res)}`;
+        document.getElementById("judgeHandsub").innerHTML = `Player 1 : <font color="red">${res[0]["description"]}</font><br>Player 2 : <font color="blue">${res[1]["description"]}</font>`;
     }
     
-    // シャッフルされたカードの先頭から5枚を選ぶ
-    for (let i = 3; i <= 7; i++) {
-        const card = allCards[i - 1];
-        hands.push(card);
-        document.getElementById('board' + (i - 2)).src = "/image/" + card.suit + "/" + card.number;
-    }
-
-    judge(hands);
     return;
 }
