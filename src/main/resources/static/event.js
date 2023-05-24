@@ -2,7 +2,8 @@
 function ReloadOrAnsDisplay() {
     if(document.getElementById('judgeHandmain').style.display == 'none'){
         document.getElementById('judgeHandmain').style.display = 'block';
-        document.getElementById('judgeHandsub').style.display = 'block';
+        var element = document.getElementById('judgeHandsub');
+        if(element) element.style.display = 'block';
     }else{
         location.reload();
     }
@@ -25,4 +26,3 @@ window.addEventListener('keydown', function(e) {
         ReloadOrAnsDisplay();
     }
 });
-

@@ -12,8 +12,12 @@ function makeHands(playerNum){
     }    
 
     console.log(res);
-    document.getElementById("judgeHandmain").innerHTML = `Winner : ${isWinner(res)}`;
-    document.getElementById("judgeHandsub").innerHTML = `Player 1 : <font color="red">${res[0]["description"]}</font><br>Player 2 : <font color="blue">${res[1]["description"]}</font>`;
+    if(playerNum == 1){
+        document.getElementById("judgeHandmain").innerHTML = `${res[0]["description"]}`;
+    }else{
+        document.getElementById("judgeHandmain").innerHTML = `Winner : ${isWinner(res)}`;
+        document.getElementById("judgeHandsub").innerHTML = `Player 1 : <font color="red">${res[0]["description"]}</font><br>Player 2 : <font color="blue">${res[1]["description"]}</font>`;
+    }
     
     return;
 }
