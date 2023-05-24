@@ -26,6 +26,9 @@ public class PageController {
 		String[] hands = {"Hand0111", "Hand0112"};
 		String[] boards = {"Board011", "Board012", "Board013", "Board014", "Board015"};
 
+		model.addAttribute("playerNum", 1);
+		model.addAttribute("boardNum", 1);
+
 		for (int i = 0; i < hands.length; i++) {
 			model.addAttribute("imageType" + hands[i], allCards.get(i).getImageType());
 			model.addAttribute("imageNumber" + hands[i], allCards.get(i).getImageNumber());
@@ -45,6 +48,9 @@ public class PageController {
 
 		String[] hands = {"Hand0111", "Hand0112", "Hand0121", "Hand0122"};
 		String[] boards = {"Board011", "Board012", "Board013", "Board014", "Board015"};
+
+		model.addAttribute("playerNum", 2);
+		model.addAttribute("boardNum", 1);
 
 		for (int i = 0; i < hands.length; i++) {
 			model.addAttribute("imageType" + hands[i], allCards.get(i).getImageType());

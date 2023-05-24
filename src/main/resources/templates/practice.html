@@ -9,6 +9,7 @@
     <script th:src="@{/selectCard.js}" type="text/javascript"></script>
     <script th:src="@{/judgeHand.js}" type="text/javascript"></script>
     <script th:src="@{/event.js}" type="text/javascript"></script>
+    <script th:src="@{/global_value.js}" type="text/javascript"></script>
 </head>
 
 <body class="m-3">
@@ -30,6 +31,8 @@
 
     <script th:inline="javascript">
         /*<![CDATA[*/
+            let playerNum =  /*[[${playerNum}]]*/ 'default';
+            let boardNum =  /*[[${boardNum}]]*/ 'default';
             var imageTypeHand0111 = /*[[${imageTypeHand0111}]]*/ 'default';
             var imageNumberHand0111 = /*[[${imageNumberHand0111}]]*/ 'default';
             var imageTypeHand0112 = /*[[${imageTypeHand0112}]]*/ 'default';
