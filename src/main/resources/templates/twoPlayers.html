@@ -30,8 +30,16 @@
 
     <hr>
 
-    <h2><span id = "judgeHandmain"></span></h2>
-    <h3><span id = "judgeHandsub"></span></h3>
+    <div class="d-flex" id="button-container">
+        <button class="btn btn-danger custom-button" onclick="showCircle()">Player1</button>
+        <button class="btn btn-secondary custom-button" onclick="showCross()">Chop</button>
+        <button class="btn btn-primary custom-button" onclick="hideButtonsAndShowNext()">Player2</button>
+    </div>
+    <h2><span id="judgeHandmain" style="display: none;"></span></h2>
+    <h3><span id="judgeHandsub" style="display: none;"></span></h3>
+    <button class="btn btn-secondary" id="next-button" onclick="ReloadOrAnsDisplay()">Next...</button>
+    <div id="circle" class="shape"></div>
+    <div id="cross" class="shape"></div>
 
     <script th:inline="javascript">
         /*<![CDATA[*/
@@ -57,8 +65,6 @@
             var imageNumberBoard015 = /*[[${imageNumberBoard015}]]*/ 'default';
         /*]]>*/
     
-        document.getElementById('judgeHandmain').style.display = 'none';
-        document.getElementById('judgeHandsub').style.display = 'none';
         makeHands(1, 2);        
     </script>
 
