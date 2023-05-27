@@ -16,7 +16,7 @@ function makeHands(){
     if(playerNum == 1){
         document.getElementById("judgeHandmain").innerHTML = `${allHands[0]["description"]}`;
     }else{
-        document.getElementById("judgeHandmain").innerHTML = `Winner : ${isWinner(allHands)}`;
+        document.getElementById("judgeHandmain").innerHTML = `Winner : ${isWinnerTxt(allHands)}`;
         document.getElementById("judgeHandsub").innerHTML = `Player 1 : <font color="red">${allHands[0]["description"]}</font><br>Player 2 : <font color="blue">${allHands[1]["description"]}</font>`;
     }
     

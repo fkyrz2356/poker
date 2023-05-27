@@ -14,32 +14,34 @@
 </head>
 
 <body class="m-3">
-    <h1>Poker 役判定練習 2Players</h1>
+    <h1>Poker 役判定チャレンジ</h1>
     <p>赤色カードがPlayer1のハンド、青色カードがPlayer2のハンド、下5枚がボードです。</p>
-    <hr>
-    <img class="imageRed" th:src="@{'/card/' + ${imageTypeHand0111} + '/' + ${imageNumberHand0111} + '.png'}" alt="Loading…" width=100>
-    <img class="imageRed" th:src="@{'/card/' + ${imageTypeHand0112} + '/' + ${imageNumberHand0112} + '.png'}" alt="Loading…" width=100 style="margin-right: 104px;">
-    <img class="imageBlue" th:src="@{'/card/' + ${imageTypeHand0121} + '/' + ${imageNumberHand0121} + '.png'}" alt="Loading…" width=100>
-    <img class="imageBlue" th:src="@{'/card/' + ${imageTypeHand0122} + '/' + ${imageNumberHand0122} + '.png'}" alt="Loading…" width=100>
-    <hr>
-    <img th:src="@{'/card/' + ${imageTypeBoard011} + '/' + ${imageNumberBoard011} + '.png'}" alt="Loading…" width=100>
-    <img th:src="@{'/card/' + ${imageTypeBoard012} + '/' + ${imageNumberBoard012} + '.png'}" alt="Loading…" width=100>
-    <img th:src="@{'/card/' + ${imageTypeBoard013} + '/' + ${imageNumberBoard013} + '.png'}" alt="Loading…" width=100>
-    <img th:src="@{'/card/' + ${imageTypeBoard014} + '/' + ${imageNumberBoard014} + '.png'}" alt="Loading…" width=100>
-    <img th:src="@{'/card/' + ${imageTypeBoard015} + '/' + ${imageNumberBoard015} + '.png'}" alt="Loading…" width=100>
+    <div id = boardImage01>
+        <hr>
+        <img class="imageRed" th:src="@{'/card/' + ${imageTypeHand0111} + '/' + ${imageNumberHand0111} + '.png'}" alt="Loading…" width=100>
+        <img class="imageRed" th:src="@{'/card/' + ${imageTypeHand0112} + '/' + ${imageNumberHand0112} + '.png'}" alt="Loading…" width=100 style="margin-right: 104px;">
+        <img class="imageBlue" th:src="@{'/card/' + ${imageTypeHand0121} + '/' + ${imageNumberHand0121} + '.png'}" alt="Loading…" width=100>
+        <img class="imageBlue" th:src="@{'/card/' + ${imageTypeHand0122} + '/' + ${imageNumberHand0122} + '.png'}" alt="Loading…" width=100>
+        <hr>
+        <img th:src="@{'/card/' + ${imageTypeBoard011} + '/' + ${imageNumberBoard011} + '.png'}" alt="Loading…" width=100>
+        <img th:src="@{'/card/' + ${imageTypeBoard012} + '/' + ${imageNumberBoard012} + '.png'}" alt="Loading…" width=100>
+        <img th:src="@{'/card/' + ${imageTypeBoard013} + '/' + ${imageNumberBoard013} + '.png'}" alt="Loading…" width=100>
+        <img th:src="@{'/card/' + ${imageTypeBoard014} + '/' + ${imageNumberBoard014} + '.png'}" alt="Loading…" width=100>
+        <img th:src="@{'/card/' + ${imageTypeBoard015} + '/' + ${imageNumberBoard015} + '.png'}" alt="Loading…" width=100>
 
-    <hr>
+        <hr>
+        <div id="circle" class="shape"></div>
+        <div id="cross" class="shape"></div>
 
-    <div class="d-flex" id="button-container">
-        <button class="btn btn-danger custom-button" onclick="hideButtonsAndShowNext(1)">Player1</button>
-        <button class="btn btn-secondary custom-button" onclick="hideButtonsAndShowNext(0)">Chop</button>
-        <button class="btn btn-primary custom-button" onclick="hideButtonsAndShowNext(2)">Player2</button>
+        <div class="d-flex" id="button-container">
+            <button class="btn btn-danger custom-button" onclick="hideButtonsAndShowNext(1)">Player1</button>
+            <button class="btn btn-secondary custom-button" onclick="hideButtonsAndShowNext(0)">Chop</button>
+            <button class="btn btn-primary custom-button" onclick="hideButtonsAndShowNext(2)">Player2</button>
+        </div>
+        <h2><span id="judgeHandmain" style="display: none;"></span></h2>
+        <h3><span id="judgeHandsub" style="display: none;"></span></h3>
+        <button class="btn btn-secondary" id="next-button" onclick="ReloadOrAnsDisplay()">Next...</button>
     </div>
-    <h2><span id="judgeHandmain" style="display: none;"></span></h2>
-    <h3><span id="judgeHandsub" style="display: none;"></span></h3>
-    <button class="btn btn-secondary" id="next-button" onclick="ReloadOrAnsDisplay()">Next...</button>
-    <div id="circle" class="shape"></div>
-    <div id="cross" class="shape"></div>
 
     <script th:inline="javascript">
         /*<![CDATA[*/

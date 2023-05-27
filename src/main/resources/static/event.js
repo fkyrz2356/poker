@@ -4,7 +4,13 @@ function ReloadOrAnsDisplay() {
     return;
 }
 
-function hideButtonsAndShowNext() {
+function hideButtonsAndShowNext(t) {
+    if(t == whichIsWinner){
+        showShape('circle');
+    }else{
+        showShape('cross');
+    }
+
     var buttons = document.querySelectorAll('#button-container button');
     for (var i = 0; i < buttons.length; i++) {
         buttons[i].style.display = 'none';
@@ -22,19 +28,16 @@ function showShape(shapeId) {
     }, 400);
 }
 
-function showCircle() {
-    showShape('circle');
-}
+function judgeCorrect(){
 
-function showCross() {
-    showShape('cross');
 }
 
 // スマホでのタッチイベント
+/*
 window.addEventListener('touchstart', function(e) {
     ReloadOrAnsDisplay();
 });
-
+*/
 // PCでの左クリックイベント
 /*
 window.addEventListener('click', function(e) {
