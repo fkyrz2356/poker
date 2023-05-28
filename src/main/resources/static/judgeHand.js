@@ -104,13 +104,15 @@ function IsTwoPairs(targetCards ){
 
 	if(sameCount[2].length >= 2){
 		let ans = sameCount[2];
+		for(let i = 0; i < ans.length; i++) {
+			if(ans[i] == 1) {
+				ans[i] = 14;
+			}
+		}
 		ans.sort((a, b) => b - a);
 		ans = ans.slice(0, 2);
 		for(let i = 0; i < ans.length; i++) {
 			arr = arr.filter(item => item !== ans[i]);
-			if(ans[i] == 1) {
-				ans[i] = 14;
-			}
 		}
 		let ansCopy = ans.slice();
 		ans = ans.concat(ansCopy);
