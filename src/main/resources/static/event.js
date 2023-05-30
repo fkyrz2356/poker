@@ -5,6 +5,7 @@ function ReloadOrAnsDisplay() {
 }
 
 function hideButtonsAndShowNext(t) {
+    clearInterval(countdownTimer);
     if(t == whichIsWinner){
         showShape('circle');
     }else{

@@ -16,6 +16,18 @@
     left: 360px;
 }
 
+#container {
+    width: 550px; 
+    display: flex;       
+    align-items: center;   /* countdownとbuttonを上下の中央に配置 */
+}
+
+#countdown {
+    width: 100%;      
+    text-align: center; /* テキストも中央に配置 */
+}
+
+
 #boardImage01 {
     position: relative;
     width: 550px;
