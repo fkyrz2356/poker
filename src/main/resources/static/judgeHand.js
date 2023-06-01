@@ -112,7 +112,9 @@ function IsTwoPairs(targetCards ){
 		ans.sort((a, b) => b - a);
 		ans = ans.slice(0, 2);
 		for(let i = 0; i < ans.length; i++) {
-			arr = arr.filter(item => item !== ans[i]);
+			let eraseNum = ans[i];
+			if(eraseNum == 14) eraseNum = 1;
+			arr = arr.filter(item => item !== eraseNum);
 		}
 		let ansCopy = ans.slice();
 		ans = ans.concat(ansCopy);

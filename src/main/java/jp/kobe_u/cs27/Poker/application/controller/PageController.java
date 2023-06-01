@@ -127,4 +127,10 @@ public class PageController {
 		return "countdown";
     }
 
+	@GetMapping("/version")
+    public String pageController4(Model model) {
+
+		return "versionHistory";
+    }
+
 }

@@ -29,30 +29,9 @@ function showShape(shapeId) {
     }, 400);
 }
 
-function judgeCorrect(){
-
-}
-
-// スマホでのタッチイベント
-/*
-window.addEventListener('touchstart', function(e) {
-    ReloadOrAnsDisplay();
-});
-*/
-// PCでの左クリックイベント
-/*
-window.addEventListener('click', function(e) {
-    ReloadOrAnsDisplay();
-});
-*/
-
 // PCでのEnterキー押下イベント
 window.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') { // Enterキーが押された時
         ReloadOrAnsDisplay();
     }
 });
-
-function highlight(){
-    
-}
