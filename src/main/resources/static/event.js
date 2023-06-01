@@ -1,24 +1,33 @@
 // 関数定義
 function ReloadOrAnsDisplay() {
-    if(document.getElementById('judgeHandmain').style.display == 'none'){
-        document.getElementById('judgeHandmain').style.display = 'block';
-        var element = document.getElementById('judgeHandsub');
-        if(element) element.style.display = 'block';
-    }else{
-        location.reload();
-    }
+    location.reload();
     return;
 }
 
-// スマホでのタッチイベント
-window.addEventListener('touchstart', function(e) {
-    ReloadOrAnsDisplay();
-});
+function hideButtonsAndShowNext(t) {
+    clearInterval(countdownTimer);
+    if(t == whichIsWinner){
+        showShape('circle');
+    }else{
+        showShape('cross');
+    }
 
-// PCでの左クリックイベント
-window.addEventListener('click', function(e) {
-    ReloadOrAnsDisplay();
-});
+    var buttons = document.querySelectorAll('#button-container button');
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].style.display = 'none';
+    }
+    document.getElementById('judgeHandmain').style.display = 'block';
+    document.getElementById('judgeHandsub').style.display = 'block';
+    document.getElementById('next-button').style.display = 'block';
+}
+
+function showShape(shapeId) {
+    var shape = document.getElementById(shapeId);
+    shape.style.display = 'block';
+    setTimeout(function() {
+        shape.style.display = 'none';
+    }, 400);
+}
 
 // PCでのEnterキー押下イベント
 window.addEventListener('keydown', function(e) {

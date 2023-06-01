@@ -104,13 +104,17 @@ function IsTwoPairs(targetCards ){
 
 	if(sameCount[2].length >= 2){
 		let ans = sameCount[2];
-		ans.sort((a, b) => b - a);
-		ans = ans.slice(0, 2);
 		for(let i = 0; i < ans.length; i++) {
-			arr = arr.filter(item => item !== ans[i]);
 			if(ans[i] == 1) {
 				ans[i] = 14;
 			}
+		}
+		ans.sort((a, b) => b - a);
+		ans = ans.slice(0, 2);
+		for(let i = 0; i < ans.length; i++) {
+			let eraseNum = ans[i];
+			if(eraseNum == 14) eraseNum = 1;
+			arr = arr.filter(item => item !== eraseNum);
 		}
 		let ansCopy = ans.slice();
 		ans = ans.concat(ansCopy);
@@ -213,16 +217,27 @@ function IsHighCard(targetCards){
 
 function isWinner(hands){
 	if(hands[0]["strength"] < hands[1]["strength"]){
-		return '<font color="blue">Player 2</font>';
+		return 2;
 	}else if(hands[0]["strength"] > hands[1]["strength"]){
-		return '<font color="red">Player 1</font>';
+		return 1;
 	}
 	for(let i = 0; i < 5; ++i){
 		if(hands[0]["cards"][i] < hands[1]["cards"][i]){
-			return '<font color="blue">Player 2</font>';
+			return 2;
 		}else if(hands[0]["cards"][i] > hands[1]["cards"][i]){
-			return '<font color="red">Player 1</font>';
+			return 1;
 		}
 	}
-	return "Chop";
+	return 0;
+}
+
+function isWinnerTxt(hands){
+	whichIsWinner = isWinner(hands);
+	if(whichIsWinner == 1){
+		return '<font color="red">Player 1</font>';
+	}else if(whichIsWinner == 2){
+		return '<font color="blue">Player 2</font>';
+	}else{
+		return "Chop";
+	}
 }

@@ -1,0 +1,84 @@
+.imageRed {
+    border: 2px solid red;
+}
+.imageBlue {
+    border: 2px solid blue;
+}
+
+.custom-button {
+    width: 170px;
+    margin-right: 10px;
+}
+#next-button {
+    display: none;
+    width: 170px;
+    position: relative;
+    left: 360px;
+}
+
+#container {
+    width: 550px; 
+    display: flex;       
+    align-items: center;   /* countdownとbuttonを上下の中央に配置 */
+}
+
+#countdown {
+    width: 100%;      
+    text-align: center; /* テキストも中央に配置 */
+}
+
+
+#boardImage01 {
+    position: relative;
+    width: 550px;
+    height: 550px;
+}
+
+#circle {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 550px;
+    height: 550px;
+    transform: translate(-50%, -50%);
+    border: 40px solid blue;
+    border-radius: 50%;
+}
+
+#cross {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 550px;
+    height: 550px;
+    transform: translate(-50%, -50%);
+}
+
+#cross:before, #cross:after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 40px;
+    background-color: red;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#cross:before {
+    transform: translateY(-50%) rotate(45deg);
+}
+
+#cross:after {
+    transform: translateY(-50%) rotate(-45deg);
+}
+
+#version {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+}
+
