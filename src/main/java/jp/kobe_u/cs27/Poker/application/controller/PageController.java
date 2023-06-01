@@ -3,7 +3,6 @@ package jp.kobe_u.cs27.Poker.application.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import jp.kobe_u.cs27.Poker.application.bean.Card;
@@ -14,7 +13,6 @@ public class PageController {
 
     private final CardService cardService;
 
-    @Autowired
     public PageController(CardService cardService) {
         this.cardService = cardService;
     }
