@@ -104,29 +104,6 @@ public class PageController {
 		return "twoPlayers";
     }
 
-	@GetMapping("/coundown")
-    public String pageController3(Model model) {
-		List<Card> allCards = cardService.generateAllCards();
-
-		String[] hands = {"Hand0111", "Hand0112", "Hand0121", "Hand0122"};
-		String[] boards = {"Board011", "Board012", "Board013", "Board014", "Board015"};
-
-		model.addAttribute("playerNum", 2);
-		model.addAttribute("boardNum", 1);
-
-		for (int i = 0; i < hands.length; i++) {
-			model.addAttribute("imageType" + hands[i], allCards.get(i).getImageType());
-			model.addAttribute("imageNumber" + hands[i], allCards.get(i).getImageNumber());
-		}
-
-		for (int i = 0; i < boards.length; i++) {
-			model.addAttribute("imageType" + boards[i], allCards.get(i + hands.length).getImageType());
-			model.addAttribute("imageNumber" + boards[i], allCards.get(i + hands.length).getImageNumber());
-		}
-
-		return "countdown";
-    }
-
 	@GetMapping("/version")
     public String pageController4(Model model) {
 
