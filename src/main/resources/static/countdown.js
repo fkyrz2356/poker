@@ -2,7 +2,7 @@ let countdownTimer;
 
 window.onload = function() {
   const params = new URLSearchParams(window.location.search);
-  const initialSeconds = params.get('countdown') || 10;
+  let initialSeconds = params.get('countdown') || 10;
 
   document.getElementById('set-countdown').addEventListener('click', function() {
     const seconds = document.getElementById('seconds-input').value;
@@ -33,4 +33,21 @@ function startCountdown(tenthsOfSeconds) {
       hideButtonsAndShowNext(-1);
     }
   }, 100);
+}
+
+function hideButtonsAndShowNext(t) {
+  clearInterval(countdownTimer);
+  if(t == whichIsWinner){
+      showShape('circle01');
+  }else{
+      showShape('cross01');
+  }
+
+  var buttons = document.querySelectorAll('#button-container button');
+  for (var i = 0; i < buttons.length; i++) {
+      buttons[i].style.display = 'none';
+  }
+  document.getElementById('judgeHandmain01').style.display = 'block';
+  document.getElementById('judgeHandsub01').style.display = 'block';
+  document.getElementById('next-button').style.display = 'block';
 }

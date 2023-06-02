@@ -19,7 +19,7 @@ public class PageController {
         this.cardService = cardService;
     }
 
-    @GetMapping("/")
+    @GetMapping("/practice")
     public String pageController1(Model model) {
 		List<Card> allCards = cardService.generateAllCards();
 
@@ -102,6 +102,58 @@ public class PageController {
 		}
 
 		return "twoPlayers";
+    }
+
+	@GetMapping("/challenge")
+    public String pageController3(Model model) {
+		model.addAttribute("playerNum", 2);
+		model.addAttribute("boardNum", 50);
+		String[] handPath11 = new String[55];
+		String[] handPath12 = new String[55];
+		String[] handPath21 = new String[55];
+		String[] handPath22 = new String[55];
+		String[] boardPath1 = new String[55];
+		String[] boardPath2 = new String[55];
+		String[] boardPath3 = new String[55];
+		String[] boardPath4 = new String[55];
+		String[] boardPath5 = new String[55];
+		for(int num=1; num<=50; num++){
+			List<Card> allCards = cardService.generateAllCards();
+			String numStr = String.format("%02d", num); // 2桁の文字列に変換
+			int[] hands = {11, 12, 21, 22};
+			int[] boards = {1, 2, 3, 4, 5};
+
+			for (int i = 0; i < hands.length; i++) {
+				model.addAttribute("imageTypeHand" + numStr + Integer.valueOf(hands[i]).toString(), allCards.get(i).getImageType());
+				model.addAttribute("imageNumberHand" + numStr + Integer.valueOf(hands[i]).toString(), allCards.get(i).getImageNumber());
+			}
+			handPath11[num] = "/card/" + allCards.get(0).getImageType() + "/" + allCards.get(0).getImageNumber() + ".png";
+			handPath12[num] = "/card/" + allCards.get(1).getImageType() + "/" + allCards.get(1).getImageNumber() + ".png";
+			handPath21[num] = "/card/" + allCards.get(2).getImageType() + "/" + allCards.get(2).getImageNumber() + ".png";
+			handPath22[num] = "/card/" + allCards.get(3).getImageType() + "/" + allCards.get(3).getImageNumber() + ".png";
+			
+			for (int i = 0; i < boards.length; i++) {
+				model.addAttribute("imageTypeBoard" + numStr +  Integer.valueOf(boards[i]).toString(), allCards.get(i + hands.length).getImageType());
+				model.addAttribute("imageNumberBoard" + numStr +  Integer.valueOf(boards[i]).toString(), allCards.get(i + hands.length).getImageNumber());
+			}
+			boardPath1[num] = "/card/" + allCards.get(4).getImageType() + "/" + allCards.get(4).getImageNumber() + ".png";
+			boardPath2[num] = "/card/" + allCards.get(5).getImageType() + "/" + allCards.get(5).getImageNumber() + ".png";
+			boardPath3[num] = "/card/" + allCards.get(6).getImageType() + "/" + allCards.get(6).getImageNumber() + ".png";
+			boardPath4[num] = "/card/" + allCards.get(7).getImageType() + "/" + allCards.get(7).getImageNumber() + ".png";
+			boardPath5[num] = "/card/" + allCards.get(8).getImageType() + "/" + allCards.get(8).getImageNumber() + ".png";
+		}
+
+		model.addAttribute("handPath11", handPath11);
+		model.addAttribute("handPath12", handPath12);
+		model.addAttribute("handPath21", handPath21);
+		model.addAttribute("handPath22", handPath22);
+		model.addAttribute("boardPath1", boardPath1);
+		model.addAttribute("boardPath2", boardPath2);
+		model.addAttribute("boardPath3", boardPath3);
+		model.addAttribute("boardPath4", boardPath4);
+		model.addAttribute("boardPath5", boardPath5);
+
+		return "challenge";
     }
 
 	@GetMapping("/version")

@@ -24,12 +24,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/login.html")
+    @GetMapping("/login")
     public String login() {
         return "login";
     }
 
-    @GetMapping("/signup.html")
+    @GetMapping("/signup")
     public String signup(Model model) {
         model.addAttribute("user", new User());
         return "signup";
@@ -44,7 +44,7 @@ public class UserController {
         // ユーザーを保存する
         userService.saveNewUser(user);
 
-        return "login";
+        return "redirect:/login";
     }
 
     @PostMapping("/login")
@@ -71,8 +71,20 @@ public class UserController {
         model.addAttribute("user", user);
         return "home";
     }
-    
 
+    @PostMapping("/startPractice")
+    public String startPractice() {
+        return "redirect:/practice";
+    }
 
+    @PostMapping("/startTwoPlayers")
+    public String startTwoPlayers() {
+        return "redirect:/twoPlayers";
+    }
+
+    @PostMapping("/startPerformance")
+    public String startPerformance() {
+        return "redirect:/challenge";
+    }
 
 }

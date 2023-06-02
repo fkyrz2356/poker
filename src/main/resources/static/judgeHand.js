@@ -11,7 +11,7 @@ function judge(targetCards){
     else if(IsSameNumber(targetCards, 2)["flag"]) ans = IsSameNumber(targetCards, 2);
     else ans = IsHighCard(targetCards);
 
-	console.log(ans["description"]);
+	//console.log(ans["description"]);
     //document.getElementById("judgeHand").textContent = ans["description"];
     return ans;
 }
@@ -229,15 +229,4 @@ function isWinner(hands){
 		}
 	}
 	return 0;
-}
-
-function isWinnerTxt(hands){
-	whichIsWinner = isWinner(hands);
-	if(whichIsWinner == 1){
-		return '<font color="red">Player 1</font>';
-	}else if(whichIsWinner == 2){
-		return '<font color="blue">Player 2</font>';
-	}else{
-		return "Chop";
-	}
 }
