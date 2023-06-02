@@ -16,7 +16,6 @@ function makeHands(){
         document.getElementById("judgeHandmain" + ('00' + k).slice(-2)).innerHTML = `Winner : ${isWinnerTxt(allHands)}`;
         document.getElementById("judgeHandsub" + ('00' + k).slice(-2)).innerHTML = `Player 1 : <font color="red">${allHands[0]["description"]}</font><br>Player 2 : <font color="blue">${allHands[1]["description"]}</font>`;
     }
-    console.log(whichIsWinner);
     
     return;
 }
