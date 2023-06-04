@@ -15,8 +15,7 @@
 </head>
 
 <body class="m-3">
-    <a id="version" href="https://es4.eedept.kobe-u.ac.jp/poker/version">Version 1.3.2</a></div>
-    <h1>Poker 役判定練習 2Players</h1>
+    <h1>Poker 役判定 Challenge</h1>
     <p>赤色カードがPlayer1のハンド、青色カードがPlayer2のハンド、下5枚がボードです。</p>
     <div id="container">
         <!-- カウントダウン表示 -->
@@ -46,6 +45,13 @@
         <div th:id="'circle' + ${#numbers.formatInteger(num, 2)}" class="circle"></div>
         <div th:id="'cross' + ${#numbers.formatInteger(num, 2)}" class="cross"></div>
     </div>
+    <form id="submitForm" action="/submitData" method="post">
+        <input type="hidden" id="userId" name="userId" th:value="${user.id}" />
+        <input type="hidden" id="solved" name="solved" />
+        <input type="hidden" id="date" name="date" th:value="${currentDate}" />
+        <input type="hidden" id="restTime" name="restTime" />
+        <button id="submitButton" class="btn btn-secondary" type="submit">結果を送信する</button>
+    </form>
     
     <script th:inline="javascript">
         /*<![CDATA[*/

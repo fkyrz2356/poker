@@ -217,9 +217,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <form action="/challenge" method="get">
+                    <form action="/challenge" method="post">
+                        <input type="hidden" name="currentDate" th:value="${#dates.format(#dates.createNow(), 'yyyyMMdd')}">
                         <button type="submit" class="btn btn-primary">Challengeする</button>
-                    </form>
+                    </form>                    
                 </div>
             </div>
         </div>

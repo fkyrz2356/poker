@@ -3,11 +3,15 @@ package jp.kobe_u.cs27.Poker.application.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
+import jakarta.servlet.http.HttpSession;
 
 import jp.kobe_u.cs27.Poker.application.bean.Card;
 import jp.kobe_u.cs27.Poker.application.Service.CardService;
+import jp.kobe_u.cs27.Poker.application.bean.User;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class PageController {
@@ -104,8 +108,11 @@ public class PageController {
 		return "twoPlayers";
     }
 
-	@GetMapping("/challenge")
-    public String pageController3(Model model) {
+	@PostMapping("/challenge")
+    public String pageController3(@RequestParam("currentDate") String currentDate, Model model, HttpSession session) {
+		User user = (User) session.getAttribute("user");
+		model.addAttribute("currentDate", currentDate);
+        model.addAttribute("user", user);
 		model.addAttribute("playerNum", 2);
 		model.addAttribute("boardNum", 50);
 		String[] handPath11 = new String[55];

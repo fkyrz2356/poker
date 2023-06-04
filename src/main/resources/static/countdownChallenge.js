@@ -15,6 +15,15 @@ window.onload = function() {
     }
   }
   document.getElementById('nowProblem').textContent = 1;
+
+  document.getElementById('submitForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    document.getElementById('solved').value = document.getElementById('nowProblem').textContent;
+    document.getElementById('restTime').value = document.getElementById('countdown').textContent;
+  
+    this.submit();
+  });
 };
 
 function startCountdown(tenthsOfSeconds) {
