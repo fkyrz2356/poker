@@ -29,6 +29,37 @@
             </div>
         </div>
     </div>
+
+    <div class="container mt-5">
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">本日(<span th:text="${#dates.format(#dates.createNow(), 'M/d')}"></span>)のチャレンジ結果：<span th:text="${score}"></span>点！</h4>
+        </div>
+    </div><hr>
+
+    <div class="container">
+        <h2 class="text-center">昨日(<span th:text="${date}"></span>)のチャレンジランキング</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">順位</th>
+                    <th scope="col">ユーザID</th>
+                    <th scope="col">得点</th>
+                    <th scope="col">残り時間</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="result, stat : ${results}">
+                    <th scope="row" th:text="${stat.count}"></th>
+                    <td th:if="${stat.count le participate}" th:text="${result.userID}"></td>
+                    <td th:if="${stat.count gt participate}">********</td>
+                    <td th:text="${result.solved} + '点'"></td>
+                    <td th:if="${result.solved == 50}" th:text="${result.restTime} + '秒'"></td>
+                    <td th:if="${result.solved != 50}">----</td>
+                </tr>
+            </tbody>
+        </table>
+    </div><hr>
+    
     
     
     

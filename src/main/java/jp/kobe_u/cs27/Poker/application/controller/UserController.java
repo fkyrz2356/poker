@@ -2,6 +2,8 @@ package jp.kobe_u.cs27.Poker.application.controller;
 
 import jp.kobe_u.cs27.Poker.application.bean.User;
 import jp.kobe_u.cs27.Poker.application.Service.UserService;
+import jp.kobe_u.cs27.Poker.application.bean.ResultData;
+import jp.kobe_u.cs27.Poker.application.repository.ResultDataRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,12 @@ import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
 import java.util.Optional;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import org.springframework.beans.factory.annotation.Autowired;
+
+
 
 
 
@@ -19,6 +27,8 @@ import jakarta.servlet.http.HttpSession;
 public class UserController {
 
     private final UserService userService;
+    @Autowired
+    private ResultDataRepository resultDataRepository;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -69,8 +79,25 @@ public class UserController {
     public String home(Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
+    
+        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        List<ResultData> results = resultDataRepository.findByUserIDAndDate(user.getId(), today);
+        if (!results.isEmpty()) {
+            model.addAttribute("score", results.get(0).getSolved());
+        } else {
+            model.addAttribute("score", 0);
+        }
+
+        LocalDate yesterdayDate = LocalDate.now().minusDays(1);
+        String yesterday = yesterdayDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        List<ResultData> results2 = resultDataRepository.findByDateOrderBySolvedDescRestTimeDesc(today);
+        model.addAttribute("results", results2);
+        model.addAttribute("date", yesterdayDate.format(DateTimeFormatter.ofPattern("M/d")));
+        model.addAttribute("participate", (results2.size() + 1) / 2);
+    
         return "home";
     }
+    
 
     @PostMapping("/startPractice")
     public String startPractice() {

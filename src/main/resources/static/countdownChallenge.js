@@ -19,7 +19,9 @@ window.onload = function() {
   document.getElementById('submitForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
-    document.getElementById('solved').value = document.getElementById('nowProblem').textContent;
+    let nowProblemValue = parseInt(document.getElementById('nowProblem').textContent, 10);
+    document.getElementById('solved').value = nowProblemValue - 1;
+
     document.getElementById('restTime').value = document.getElementById('countdown').textContent;
   
     this.submit();
