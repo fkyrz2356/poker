@@ -37,6 +37,11 @@
     text-align: center; /* テキストも中央に配置 */
 }
 
+#countdownPrev {
+    width: 100%;      
+    text-align: center; /* テキストも中央に配置 */
+}
+
 .boardImage {
     position: relative;
     width: 550px;

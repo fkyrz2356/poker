@@ -19,15 +19,17 @@
     <p>赤色カードがPlayer1のハンド、青色カードがPlayer2のハンド、下5枚がボードです。</p>
     <div id="container">
         <!-- カウントダウン表示 -->
+        <h2 id="countdownPrev"></h2>
         <h2 id="countdown"></h2>
         <h3><span id="nowProblem"></span>/50</h3>
     </div>
-    <div th:each="num : ${#numbers.sequence(1,50)}" th:id="'boardImage' + ${#numbers.formatInteger(num, 2)}" class="boardImage">
+    <div th:each="num : ${#numbers.sequence(0,50)}" th:id="'boardImage' + ${#numbers.formatInteger(num, 2)}" class="boardImage">
         <hr>
-        <img class="imageRed" th:src="@{${handPath11[__${num}__]}}" alt="Loading…" width=100>
-        <img class="imageRed" th:src="@{${handPath12[__${num}__]}}" alt="Loading…" width=100  style="margin-right: 104px;">
-        <img class="imageBlue" th:src="@{${handPath21[__${num}__]}}" alt="Loading…" width=100>
-        <img class="imageBlue" th:src="@{${handPath22[__${num}__]}}" alt="Loading…" width=100>
+        <img th:class="${num} == 0 ? '' : 'imageRed'" th:src="@{${handPath11[__${num}__]}}" alt="Loading…" width="100">
+        <img th:class="${num} == 0 ? '' : 'imageRed'" th:src="@{${handPath12[__${num}__]}}" alt="Loading…" width="100" style="margin-right: 104px;">
+        <img th:class="${num} == 0 ? '' : 'imageBlue'" th:src="@{${handPath21[__${num}__]}}" alt="Loading…" width="100">
+        <img th:class="${num} == 0 ? '' : 'imageBlue'" th:src="@{${handPath22[__${num}__]}}" alt="Loading…" width="100">
+        
         <hr>
         <img th:src="@{${boardPath1[__${num}__]}}" alt="Loading…" width=100>
         <img th:src="@{${boardPath2[__${num}__]}}" alt="Loading…" width=100>
@@ -36,10 +38,19 @@
         <img th:src="@{${boardPath5[__${num}__]}}" alt="Loading…" width=100>
         <hr>
         <div class="d-flex" th:id="'button-container' + ${#numbers.formatInteger(num, 2)}">
-            <button class="btn btn-danger custom-button" th:attr="onclick='hideButtonsAndShowNext(' + ${num} + ', 1)'">Player1</button>
-            <button class="btn btn-secondary custom-button" th:attr="onclick='hideButtonsAndShowNext(' + ${num} + ', 0)'">Chop</button>
-            <button class="btn btn-primary custom-button" th:attr="onclick='hideButtonsAndShowNext(' + ${num} + ', 2)'">Player2</button>
-        </div>
+            <button class="btn custom-button" 
+                    th:classappend="${num} == 0 ? 'btn-secondary' : 'btn-danger'" 
+                    th:disabled="${num} == 0"
+                    th:attr="onclick='hideButtonsAndShowNext(' + ${num} + ', 1)'">Player1</button>
+            <button class="btn custom-button" 
+                    th:classappend="${num} == 0 ? 'btn-secondary' : 'btn-secondary'" 
+                    th:disabled="${num} == 0"
+                    th:attr="onclick='hideButtonsAndShowNext(' + ${num} + ', 0)'">Chop</button>
+            <button class="btn custom-button" 
+                    th:classappend="${num} == 0 ? 'btn-secondary' : 'btn-primary'" 
+                    th:disabled="${num} == 0"
+                    th:attr="onclick='hideButtonsAndShowNext(' + ${num} + ', 2)'">Player2</button>
+        </div>        
         <h2><span th:id="'judgeHandmain' + ${#numbers.formatInteger(num, 2)}" style="display: none;"></span></h2>
         <h3><span th:id="'judgeHandsub' + ${#numbers.formatInteger(num, 2)}" style="display: none;"></span></h3>
         <div th:id="'circle' + ${#numbers.formatInteger(num, 2)}" class="circle"></div>

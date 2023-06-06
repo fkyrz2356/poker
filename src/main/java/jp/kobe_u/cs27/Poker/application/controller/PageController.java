@@ -124,6 +124,17 @@ public class PageController {
 		String[] boardPath3 = new String[55];
 		String[] boardPath4 = new String[55];
 		String[] boardPath5 = new String[55];
+
+		handPath11[0] = "/card/black.jpg";
+		handPath12[0] = "/card/black.jpg";
+		handPath21[0] = "/card/black.jpg";
+		handPath22[0] = "/card/black.jpg";
+		boardPath1[0] = "/card/black.jpg";
+		boardPath2[0] = "/card/black.jpg";
+		boardPath3[0] = "/card/black.jpg";
+		boardPath4[0] = "/card/black.jpg";
+		boardPath5[0] = "/card/black.jpg";
+
 		for(int num=1; num<=50; num++){
 			List<Card> allCards = cardService.generateAllCards();
 			String numStr = String.format("%02d", num); // 2桁の文字列に変換

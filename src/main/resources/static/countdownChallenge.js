@@ -1,20 +1,22 @@
-let countdownTimer;
-let counter
+let countdownTimer, countdownTimerPrev;
+let counter, counterPrev;
 
 window.onload = function() {
   const params = new URLSearchParams(window.location.search);
-  let initialSeconds = 60;
 
-  startCountdown(initialSeconds * 10);
+  startCountdownPrev(10);
 
-  for(let i=2; i<=50; i++) {
+  document.getElementById('countdownPrev').style.display = "block";
+  document.getElementById('countdown').style.display = "none";
+
+  for(let i=1; i<=50; i++) {
     let numStr = String(i).padStart(2, '0'); // 2桁の文字列に変換
     let element = document.getElementById('boardImage' + numStr);
     if (element) { // 要素が存在する場合のみ非表示にする
       element.style.display = 'none';
     }
   }
-  document.getElementById('nowProblem').textContent = 1;
+  document.getElementById('nowProblem').textContent = 0;
 
   document.getElementById('submitForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -27,6 +29,26 @@ window.onload = function() {
     this.submit();
   });
 };
+
+function startCountdownPrev(tenthsOfSeconds) {
+  counterPrev = tenthsOfSeconds;
+  clearInterval(countdownTimerPrev);
+  document.getElementById('countdownPrev').innerHTML = `${counterPrev}s to start...`;
+  countdownTimerPrev = setInterval(function() {
+    counterPrev--;
+    document.getElementById('countdownPrev').innerHTML = `${counterPrev}s to start...`;
+    if (counterPrev <= 0) {
+      document.getElementById('countdownPrev').innerHTML = ``;
+      document.getElementById('nowProblem').textContent = 1;
+      startCountdown(600);
+      clearInterval(countdownTimerPrev);
+      document.getElementById('countdownPrev').style.display = "none";
+      document.getElementById('countdown').style.display = "block";
+      document.getElementById('boardImage00').style.display = "none";
+      document.getElementById('boardImage01').style.display = "block";
+    }
+  }, 1000);
+}
 
 function startCountdown(tenthsOfSeconds) {
   counter = tenthsOfSeconds;
