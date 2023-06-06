@@ -161,38 +161,47 @@ public class PageController {
 
 		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "hand11").forEach(info -> {
 			model.addAttribute("imageTypeHand" + String.format("%02d", info.getBoardNumber()) + "11", info.getSuit());
+			model.addAttribute("imageNumberHand" + String.format("%02d", info.getBoardNumber()) + "11", info.getNumber());
 			handPath11[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
 		});
 		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "hand12").forEach(info -> {
 			model.addAttribute("imageTypeHand" + String.format("%02d", info.getBoardNumber()) + "12", info.getSuit());
+			model.addAttribute("imageNumberHand" + String.format("%02d", info.getBoardNumber()) + "12", info.getNumber());
 			handPath12[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
 		});
 		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "hand21").forEach(info -> {
 			model.addAttribute("imageTypeHand" + String.format("%02d", info.getBoardNumber()) + "21", info.getSuit());
+			model.addAttribute("imageNumberHand" + String.format("%02d", info.getBoardNumber()) + "21", info.getNumber());
 			handPath21[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
 		});
 		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "hand22").forEach(info -> {
 			model.addAttribute("imageTypeHand" + String.format("%02d", info.getBoardNumber()) + "22", info.getSuit());
+			model.addAttribute("imageNumberHand" + String.format("%02d", info.getBoardNumber()) + "22", info.getNumber());
 			handPath22[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
 		});
 		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "board1").forEach(info -> {
 			model.addAttribute("imageTypeBoard" + String.format("%02d", info.getBoardNumber()) + "1", info.getSuit());
+			model.addAttribute("imageNumberBoard" + String.format("%02d", info.getBoardNumber()) + "1", info.getNumber());
 			boardPath1[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
 		});
 		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "board2").forEach(info -> {
 			model.addAttribute("imageTypeBoard" + String.format("%02d", info.getBoardNumber()) + "2", info.getSuit());
+			model.addAttribute("imageNumberBoard" + String.format("%02d", info.getBoardNumber()) + "2", info.getNumber());
 			boardPath2[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
 		});
 		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "board3").forEach(info -> {
 			model.addAttribute("imageTypeBoard" + String.format("%02d", info.getBoardNumber()) + "3", info.getSuit());
+			model.addAttribute("imageNumberBoard" + String.format("%02d", info.getBoardNumber()) + "3", info.getNumber());
 			boardPath3[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
 		});
 		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "board4").forEach(info -> {
 			model.addAttribute("imageTypeBoard" + String.format("%02d", info.getBoardNumber()) + "4", info.getSuit());
+			model.addAttribute("imageNumberBoard" + String.format("%02d", info.getBoardNumber()) + "4", info.getNumber());
 			boardPath4[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
 		});
 		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "board5").forEach(info -> {
 			model.addAttribute("imageTypeBoard" + String.format("%02d", info.getBoardNumber()) + "5", info.getSuit());
+			model.addAttribute("imageNumberBoard" + String.format("%02d", info.getBoardNumber()) + "5", info.getNumber());
 			boardPath5[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
 		});
 

@@ -56,7 +56,7 @@
         <div th:id="'circle' + ${#numbers.formatInteger(num, 2)}" class="circle"></div>
         <div th:id="'cross' + ${#numbers.formatInteger(num, 2)}" class="cross"></div>
     </div>
-    <form id="submitForm" action="/submitData" method="post">
+    <form id="submitForm" th:action="@{/submitData}" method="post">
         <input type="hidden" id="userId" name="userId" th:value="${user.id}" />
         <input type="hidden" id="solved" name="solved" />
         <input type="hidden" id="date" name="date" th:value="${currentDate}" />

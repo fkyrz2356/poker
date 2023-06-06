@@ -8,6 +8,7 @@ window.onload = function() {
 
   document.getElementById('countdownPrev').style.display = "block";
   document.getElementById('countdown').style.display = "none";
+  document.getElementById('submitButton').style.display = 'none';
 
   for(let i=1; i<=50; i++) {
     let numStr = String(i).padStart(2, '0'); // 2桁の文字列に変換
@@ -92,7 +93,7 @@ function hideButtonsAndShowNext(num, t) {
     }else if(t != whichIsWinner[num]){
         document.getElementById('judgeHandmain' + String(num).padStart(2, '0')).style.display = 'block';
         document.getElementById('judgeHandsub' + String(num).padStart(2, '0')).style.display = 'block';
-        document.getElementById('submitButton').style.display = 'block';;
+        document.getElementById('submitButton').style.display = 'block';
         showShape('cross' + ('00' + num).slice(-2));
         clearInterval(countdownTimer);
     }else{
