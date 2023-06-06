@@ -64,12 +64,13 @@ function hideButtonsAndShowNext(num, t) {
         showShape('circle' + ('00' + (num + 0)).slice(-2));
         showShape('circle' + ('00' + (num + 1)).slice(-2));
         document.getElementById('boardImage' + String(num).padStart(2, '0')).style.display = 'none';
-        document.getElementById('boardImage' + String(num + 1).padStart(2, '0')).style.display = '';
+        document.getElementById('boardImage' + String(num + 1).padStart(2, '0')).style.display = 'block';
         document.getElementById('nowProblem').textContent = String(num + 1);
         addCountdown(2);
     }else if(t != whichIsWinner[num]){
-        document.getElementById('judgeHandmain' + String(num).padStart(2, '0')).style.display = '';
-        document.getElementById('judgeHandsub' + String(num).padStart(2, '0')).style.display = '';
+        document.getElementById('judgeHandmain' + String(num).padStart(2, '0')).style.display = 'block';
+        document.getElementById('judgeHandsub' + String(num).padStart(2, '0')).style.display = 'block';
+        document.getElementById('submitButton').style.display = 'block';;
         showShape('cross' + ('00' + num).slice(-2));
         clearInterval(countdownTimer);
     }else{
