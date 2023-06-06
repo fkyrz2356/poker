@@ -11,12 +11,17 @@ import jakarta.servlet.http.HttpSession;
 import jp.kobe_u.cs27.Poker.application.bean.Card;
 import jp.kobe_u.cs27.Poker.application.Service.CardService;
 import jp.kobe_u.cs27.Poker.application.bean.User;
+import jp.kobe_u.cs27.Poker.application.bean.BoardInfo;
+import jp.kobe_u.cs27.Poker.application.repository.BoardInfoRepository;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class PageController {
 
     private final CardService cardService;
+
+	@Autowired
+    private BoardInfoRepository boardInfoRepository;
 
     @Autowired
     public PageController(CardService cardService) {
@@ -135,31 +140,61 @@ public class PageController {
 		boardPath4[0] = "/card/black.jpg";
 		boardPath5[0] = "/card/black.jpg";
 
-		for(int num=1; num<=50; num++){
-			List<Card> allCards = cardService.generateAllCards();
-			String numStr = String.format("%02d", num); // 2桁の文字列に変換
-			int[] hands = {11, 12, 21, 22};
-			int[] boards = {1, 2, 3, 4, 5};
-
-			for (int i = 0; i < hands.length; i++) {
-				model.addAttribute("imageTypeHand" + numStr + Integer.valueOf(hands[i]).toString(), allCards.get(i).getImageType());
-				model.addAttribute("imageNumberHand" + numStr + Integer.valueOf(hands[i]).toString(), allCards.get(i).getImageNumber());
+		if(boardInfoRepository.findByDate(currentDate).size() == 0){
+			for(int num=1; num<=50; num++){
+				List<Card> allCards = cardService.generateAllCards();
+				String[] typeStr = {"hand11", "hand12", "hand21", "hand22", "board1", "board2", "board3", "board4", "board5"};
+	
+				for (int i = 0; i < typeStr.length; i++) {
+					BoardInfo boardInfo = new BoardInfo();
+					boardInfo.setDate(currentDate);
+					boardInfo.setType(typeStr[i]);
+					boardInfo.setBoardNumber(num);
+					boardInfo.setSuit(allCards.get(i).getImageType());
+					boardInfo.setNumber(allCards.get(i).getImageNumber());
+					
+					// Save the new BoardInfo object to the database
+    				boardInfoRepository.save(boardInfo);
+				}
 			}
-			handPath11[num] = "/card/" + allCards.get(0).getImageType() + "/" + allCards.get(0).getImageNumber() + ".png";
-			handPath12[num] = "/card/" + allCards.get(1).getImageType() + "/" + allCards.get(1).getImageNumber() + ".png";
-			handPath21[num] = "/card/" + allCards.get(2).getImageType() + "/" + allCards.get(2).getImageNumber() + ".png";
-			handPath22[num] = "/card/" + allCards.get(3).getImageType() + "/" + allCards.get(3).getImageNumber() + ".png";
-			
-			for (int i = 0; i < boards.length; i++) {
-				model.addAttribute("imageTypeBoard" + numStr +  Integer.valueOf(boards[i]).toString(), allCards.get(i + hands.length).getImageType());
-				model.addAttribute("imageNumberBoard" + numStr +  Integer.valueOf(boards[i]).toString(), allCards.get(i + hands.length).getImageNumber());
-			}
-			boardPath1[num] = "/card/" + allCards.get(4).getImageType() + "/" + allCards.get(4).getImageNumber() + ".png";
-			boardPath2[num] = "/card/" + allCards.get(5).getImageType() + "/" + allCards.get(5).getImageNumber() + ".png";
-			boardPath3[num] = "/card/" + allCards.get(6).getImageType() + "/" + allCards.get(6).getImageNumber() + ".png";
-			boardPath4[num] = "/card/" + allCards.get(7).getImageType() + "/" + allCards.get(7).getImageNumber() + ".png";
-			boardPath5[num] = "/card/" + allCards.get(8).getImageType() + "/" + allCards.get(8).getImageNumber() + ".png";
 		}
+
+		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "hand11").forEach(info -> {
+			model.addAttribute("imageTypeHand" + String.format("%02d", info.getBoardNumber()) + "11", info.getSuit());
+			handPath11[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
+		});
+		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "hand12").forEach(info -> {
+			model.addAttribute("imageTypeHand" + String.format("%02d", info.getBoardNumber()) + "12", info.getSuit());
+			handPath12[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
+		});
+		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "hand21").forEach(info -> {
+			model.addAttribute("imageTypeHand" + String.format("%02d", info.getBoardNumber()) + "21", info.getSuit());
+			handPath21[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
+		});
+		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "hand22").forEach(info -> {
+			model.addAttribute("imageTypeHand" + String.format("%02d", info.getBoardNumber()) + "22", info.getSuit());
+			handPath22[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
+		});
+		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "board1").forEach(info -> {
+			model.addAttribute("imageTypeBoard" + String.format("%02d", info.getBoardNumber()) + "1", info.getSuit());
+			boardPath1[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
+		});
+		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "board2").forEach(info -> {
+			model.addAttribute("imageTypeBoard" + String.format("%02d", info.getBoardNumber()) + "2", info.getSuit());
+			boardPath2[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
+		});
+		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "board3").forEach(info -> {
+			model.addAttribute("imageTypeBoard" + String.format("%02d", info.getBoardNumber()) + "3", info.getSuit());
+			boardPath3[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
+		});
+		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "board4").forEach(info -> {
+			model.addAttribute("imageTypeBoard" + String.format("%02d", info.getBoardNumber()) + "4", info.getSuit());
+			boardPath4[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
+		});
+		boardInfoRepository.findByDateAndTypeOrderByBoardNumberAsc(currentDate, "board5").forEach(info -> {
+			model.addAttribute("imageTypeBoard" + String.format("%02d", info.getBoardNumber()) + "5", info.getSuit());
+			boardPath5[info.getBoardNumber()] = "/card/" + info.getSuit() + "/" + info.getNumber() + ".png";
+		});
 
 		model.addAttribute("handPath11", handPath11);
 		model.addAttribute("handPath12", handPath12);
