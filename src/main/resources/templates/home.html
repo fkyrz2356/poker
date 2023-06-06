@@ -61,10 +61,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="result, stat : ${results}">
+                <tr th:each="result, stat : ${results}" th:class="${result.userID == user.id} ? 'table-primary' : ''">
                     <th scope="row" th:text="${stat.count}"></th>
-                    <td th:if="${stat.count le participate}" th:text="${result.userID}"></td>
-                    <td th:if="${stat.count gt participate}">********</td>
+                    <td th:if="${stat.count le participate || result.userID == user.id}" th:text="${result.userID}"></td>
+                    <td th:if="${stat.count gt participate && result.userID != user.id}">********</td>
                     <td th:text="${result.solved} + '点'"></td>
                     <td th:if="${result.solved == 50}" th:text="${result.restTime} + '秒'"></td>
                     <td th:if="${result.solved != 50}">----</td>
