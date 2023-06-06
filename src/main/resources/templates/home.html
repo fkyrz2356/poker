@@ -11,8 +11,14 @@
 <body>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-5">
-                <h1 class="mt-5" th:text="${user.id}+'さんのマイページ'"></h1>
+            <div class="col-lg-12">
+                <h1 class="mt-5 text-center" th:text="${user.id}+'さんのマイページ'"></h1>
+                <div class="container mt-5">
+                    <div class="alert alert-success" role="alert">
+                        <h4 class="alert-heading text-center">本日(<span th:text="${#dates.format(#dates.createNow(), 'M/d')}"></span>)のチャレンジ結果：<b><span th:text="${score}"></span>点</b>！</h4>
+                    </div>
+                </div>
+                <h5 class="text-center">練習したいモードを選択してください。</h5>
                 <div class="row">
                     <div class="col">
                         <form th:action="@{/startPractice}" method="post">
@@ -28,13 +34,8 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="container mt-5">
-        <div class="alert alert-success" role="alert">
-            <h4 class="alert-heading">本日(<span th:text="${#dates.format(#dates.createNow(), 'M/d')}"></span>)のチャレンジ結果：<span th:text="${score}"></span>点！</h4>
-        </div>
     </div><hr>
+    
 
     <div class="container">
         <h2 class="text-center">昨日(<span th:text="${date}"></span>)のチャレンジランキング</h2>
