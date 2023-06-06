@@ -84,8 +84,10 @@ public class UserController {
         List<ResultData> results = resultDataRepository.findByUserIDAndDate(user.getId(), today);
         if (!results.isEmpty()) {
             model.addAttribute("score", results.get(0).getSolved());
+            model.addAttribute("notChallenge", false);
         } else {
             model.addAttribute("score", 0);
+            model.addAttribute("notChallenge", true);
         }
 
         LocalDate yesterdayDate = LocalDate.now().minusDays(1);

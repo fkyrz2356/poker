@@ -15,9 +15,13 @@
                 <h1 class="mt-5 text-center" th:text="${user.id}+'さんのマイページ'"></h1>
                 <div class="container mt-5">
                     <div class="alert alert-success" role="alert">
-                        <h4 class="alert-heading text-center">本日(<span th:text="${#dates.format(#dates.createNow(), 'M/d')}"></span>)のチャレンジ結果：<b><span th:text="${score}"></span>点</b>！</h4>
+                       <h4 class="alert-heading text-center">
+                         <span th:if="${notChallenge}">本日分(<span th:text="${#dates.format(#dates.createNow(), 'M/d')}"></span>)のチャレンジをまだ受けていません！</span>
+                         <span th:if="${!notChallenge}">本日(<span th:text="${#dates.format(#dates.createNow(), 'M/d')}"></span>)のチャレンジ結果：<b><span th:text="${score}"></span>点</b>！</span>
+                       </h4>
                     </div>
-                </div>
+                 </div>
+                 
                 <h5 class="text-center">練習したいモードを選択してください。</h5>
                 <div class="row">
                     <div class="col">
@@ -29,8 +33,16 @@
                         <button type="button" class="btn btn-primary mt-3 btn-block btn-lg w-100" data-toggle="modal" data-target="#countdownModal">2Players</button>
                     </div>
                     <div class="col">
-                        <button type="button" class="btn btn-primary mt-3 btn-block btn-lg w-100" data-toggle="modal" data-target="#challengeModal">Challenge</button>
-                    </div>
+                        <button type="button" 
+                                class="btn mt-3 btn-block btn-lg w-100" 
+                                th:classappend="${notChallenge} ? 'btn-primary' : 'btn-secondary'" 
+                                th:disabled="${!notChallenge}" 
+                                data-toggle="modal" 
+                                data-target="#challengeModal">
+                                Challenge
+                        </button>
+                       </div>
+                       
                 </div>
             </div>
         </div>
