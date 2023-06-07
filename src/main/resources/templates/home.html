@@ -246,25 +246,28 @@
     <div class="modal fade" id="countdownModal" tabindex="-1" role="dialog" aria-labelledby="countdownModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="countdownModalLabel">制限時間の設定</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    制限時間を設定してください。
-                    <select id="countdown" class="form-control">
-                        <option th:each="sec : ${#numbers.sequence(1, 200)}" th:value="${sec/10.0}" th:text="${sec/10.0 + '秒'}" th:selected="${sec == 100}"></option>
-                    </select>                                       
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button id="countdown-ok" type="button" class="btn btn-primary">OK</button>
-                </div>
+                <form th:action="@{/twoPlayers}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="countdownModalLabel">制限時間の設定</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        制限時間を設定してください。
+                        <select id="countdown" name="countdown" class="form-control">
+                            <option th:each="sec : ${#numbers.sequence(1, 200)}" th:value="${sec/10.0}" th:text="${sec/10.0 + '秒'}" th:selected="${sec == 100}"></option>
+                        </select>                                       
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button id="countdown-ok" type="submit" class="btn btn-primary">OK</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+
 
     <div class="modal fade" id="challengeModal" tabindex="-1" role="dialog" aria-labelledby="challengeModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -298,16 +301,6 @@
             </div>
         </div>
     </div>
-    
-    
-
-    <script>
-        document.getElementById('countdown-ok').addEventListener('click', function() {
-            var countdown = document.getElementById('countdown').value;
-            window.location.href = '/twoPlayers?countdown=' + countdown;
-        });
-    </script>
-    
     
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>

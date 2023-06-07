@@ -51,9 +51,10 @@ public class PageController {
 		return "practice";
     }
 
-    @GetMapping("/twoPlayers")
-    public String pageController2(Model model) {
+    @PostMapping("/twoPlayers")
+    public String pageController2(@RequestParam(name = "countdown") float countdown, Model model) {
 		List<Card> allCards = cardService.generateAllCards();
+        model.addAttribute("countdownInit", countdown);
 
 		/*
 		Card card1 = new Card();
