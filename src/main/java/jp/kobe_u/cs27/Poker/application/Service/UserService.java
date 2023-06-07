@@ -21,12 +21,14 @@ public class UserService {
         return user;
     }
 
-    public void saveNewUser(User user) {
+    public void saveNewUser(User user) throws Exception {
+        if(userRepository.existsById(user.getId())) {
+            throw new Exception("User ID already exists");
+        }
         userRepository.save(user);
     }
 
     public Optional<User> findUserById(String id) {
         return userRepository.findById(id);
     }
-    
 }

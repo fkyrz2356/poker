@@ -9,5 +9,5 @@ function showShape(shapeId) {
     shape.style.display = 'block';
     setTimeout(function() {
         shape.style.display = 'none';
-    }, 400);
+    }, 300);
 }

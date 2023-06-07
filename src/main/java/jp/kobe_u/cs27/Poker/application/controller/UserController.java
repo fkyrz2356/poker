@@ -46,16 +46,23 @@ public class UserController {
     }
     
     @PostMapping("/signup")
-    public String registerNewUser(@Valid @ModelAttribute User user, BindingResult bindingResult) {
+    public String registerNewUser(@Valid @ModelAttribute User user, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("errorMessage", "ID or Password do not meet the conditions");
             return "signup";  // バリデーションエラーがあればsignupページに戻す
         }
-
-        // ユーザーを保存する
-        userService.saveNewUser(user);
+        
+        try {
+            // ユーザーを保存する
+            userService.saveNewUser(user);
+        } catch(Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "signup";
+        }
 
         return "redirect:/login";
     }
+
 
     @PostMapping("/login")
     public String login(@RequestParam("id") String id, @RequestParam("password") String password, Model model, HttpSession session) {
