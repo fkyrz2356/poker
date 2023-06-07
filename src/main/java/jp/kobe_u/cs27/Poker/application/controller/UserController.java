@@ -97,7 +97,8 @@ public class UserController {
             model.addAttribute("notChallenge", true);
         }
 
-        LocalDate yesterdayDate = LocalDate.now().minusDays(1);
+        // yesterDate ではない
+        LocalDate yesterdayDate = LocalDate.now().minusDays(0);
         String yesterday = yesterdayDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         List<ResultData> results2 = resultDataRepository.findByDateOrderBySolvedDescRestTimeDesc(today);
         model.addAttribute("results", results2);
