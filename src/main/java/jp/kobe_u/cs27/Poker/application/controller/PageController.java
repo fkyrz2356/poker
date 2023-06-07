@@ -219,10 +219,4 @@ public class PageController {
 		return "challenge";
     }
 
-	@GetMapping("/version")
-    public String pageController4(Model model) {
-
-		return "versionHistory";
-    }
-
 }

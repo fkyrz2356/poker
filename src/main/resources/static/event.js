@@ -11,10 +11,3 @@ function showShape(shapeId) {
         shape.style.display = 'none';
     }, 400);
 }
-
-// PCでのEnterキー押下イベント
-window.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') { // Enterキーが押された時
-        ReloadOrAnsDisplay();
-    }
-});
