@@ -9,12 +9,22 @@
     width: 170px;
     margin-right: 10px;
 }
+
 #next-button {
     display: none;
     width: 170px;
     position: relative;
     left: 360px;
 }
+
+#submitButton {
+    display: none;
+    width: 170px;
+    position: relative;
+    left: 360px;
+    top: -120px;
+}
+
 
 #container {
     width: 550px; 
@@ -27,14 +37,18 @@
     text-align: center; /* テキストも中央に配置 */
 }
 
+#countdownPrev {
+    width: 100%;      
+    text-align: center; /* テキストも中央に配置 */
+}
 
-#boardImage01 {
+.boardImage {
     position: relative;
     width: 550px;
     height: 550px;
 }
 
-#circle {
+.circle {
     display: none;
     position: absolute;
     top: 50%;
@@ -46,7 +60,7 @@
     border-radius: 50%;
 }
 
-#cross {
+.cross {
     display: none;
     position: absolute;
     top: 50%;
@@ -56,7 +70,7 @@
     transform: translate(-50%, -50%);
 }
 
-#cross:before, #cross:after {
+.cross:before, .cross:after {
     position: absolute;
     content: "";
     width: 100%;
@@ -67,11 +81,11 @@
     transform: translateY(-50%);
 }
 
-#cross:before {
+.cross:before {
     transform: translateY(-50%) rotate(45deg);
 }
 
-#cross:after {
+.cross:after {
     transform: translateY(-50%) rotate(-45deg);
 }
 

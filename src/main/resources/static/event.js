@@ -4,34 +4,10 @@ function ReloadOrAnsDisplay() {
     return;
 }
 
-function hideButtonsAndShowNext(t) {
-    clearInterval(countdownTimer);
-    if(t == whichIsWinner){
-        showShape('circle');
-    }else{
-        showShape('cross');
-    }
-
-    var buttons = document.querySelectorAll('#button-container button');
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].style.display = 'none';
-    }
-    document.getElementById('judgeHandmain').style.display = 'block';
-    document.getElementById('judgeHandsub').style.display = 'block';
-    document.getElementById('next-button').style.display = 'block';
-}
-
 function showShape(shapeId) {
     var shape = document.getElementById(shapeId);
     shape.style.display = 'block';
     setTimeout(function() {
         shape.style.display = 'none';
-    }, 400);
+    }, 300);
 }
-
-// PCでのEnterキー押下イベント
-window.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') { // Enterキーが押された時
-        ReloadOrAnsDisplay();
-    }
-});

@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Poker 役判定 Challenge</title>
+    <link th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}" type="text/javascript"></script>
+    <link th:href="@{/CSS.css}" rel="stylesheet" type="text/css" />
+    <script th:src="@{/selectCardChallenge.js}" type="text/javascript"></script>
+    <script th:src="@{/judgeHand.js}" type="text/javascript"></script>
+    <script th:src="@{/event.js}" type="text/javascript"></script>
+    <script th:src="@{/countdownChallenge.js}" type="text/javascript"></script>
+</head>
+
+<body class="m-3">
+    <h1>Poker 役判定 Challenge</h1>
+    <p>赤色カードがPlayer1のハンド、青色カードがPlayer2のハンド、下5枚がボードです。</p>
+    <div id="container">
+        <!-- カウントダウン表示 -->
+        <h2 id="countdownPrev"></h2>
+        <h2 id="countdown"></h2>
+        <h3><span id="nowProblem"></span>/50</h3>
+    </div>
+    <div th:each="num : ${#numbers.sequence(0,50)}" th:id="'boardImage' + ${#numbers.formatInteger(num, 2)}" class="boardImage">
+        <hr>
+        <img th:class="${num} == 0 ? '' : 'imageRed'" th:src="@{${handPath11[__${num}__]}}" alt="Loading…" width="100">
+        <img th:class="${num} == 0 ? '' : 'imageRed'" th:src="@{${handPath12[__${num}__]}}" alt="Loading…" width="100" style="margin-right: 104px;">
+        <img th:class="${num} == 0 ? '' : 'imageBlue'" th:src="@{${handPath21[__${num}__]}}" alt="Loading…" width="100">
+        <img th:class="${num} == 0 ? '' : 'imageBlue'" th:src="@{${handPath22[__${num}__]}}" alt="Loading…" width="100">
+        
+        <hr>
+        <img th:src="@{${boardPath1[__${num}__]}}" alt="Loading…" width=100>
+        <img th:src="@{${boardPath2[__${num}__]}}" alt="Loading…" width=100>
+        <img th:src="@{${boardPath3[__${num}__]}}" alt="Loading…" width=100>
+        <img th:src="@{${boardPath4[__${num}__]}}" alt="Loading…" width=100>
+        <img th:src="@{${boardPath5[__${num}__]}}" alt="Loading…" width=100>
+        <hr>
+        <div class="d-flex" th:id="'button-container' + ${#numbers.formatInteger(num, 2)}">
+            <button class="btn custom-button" 
+                    th:classappend="${num} == 0 ? 'btn-secondary' : 'btn-danger'" 
+                    th:disabled="${num} == 0"
+                    th:attr="onclick='hideButtonsAndShowNext(' + ${num} + ', 1)'">Player1</button>
+            <button class="btn custom-button" 
+                    th:classappend="${num} == 0 ? 'btn-secondary' : 'btn-secondary'" 
+                    th:disabled="${num} == 0"
+                    th:attr="onclick='hideButtonsAndShowNext(' + ${num} + ', 0)'">Chop</button>
+            <button class="btn custom-button" 
+                    th:classappend="${num} == 0 ? 'btn-secondary' : 'btn-primary'" 
+                    th:disabled="${num} == 0"
+                    th:attr="onclick='hideButtonsAndShowNext(' + ${num} + ', 2)'">Player2</button>
+        </div>        
+        <h2><span th:id="'judgeHandmain' + ${#numbers.formatInteger(num, 2)}" style="display: none;"></span></h2>
+        <h3><span th:id="'judgeHandsub' + ${#numbers.formatInteger(num, 2)}" style="display: none;"></span></h3>
+        <div th:id="'circle' + ${#numbers.formatInteger(num, 2)}" class="circle"></div>
+        <div th:id="'cross' + ${#numbers.formatInteger(num, 2)}" class="cross"></div>
+    </div>
+    <form id="submitForm" th:action="@{/submitData}" method="post">
+        <input type="hidden" id="userId" name="userId" th:value="${user.id}" />
+        <input type="hidden" id="solved" name="solved" />
+        <input type="hidden" id="date" name="date" th:value="${currentDate}" />
+        <input type="hidden" id="restTime" name="restTime" />
+        <button id="submitButton" class="btn btn-secondary" type="submit">結果を送信する</button>
+    </form>
+    
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+            let playerNum =  /*[[${playerNum}]]*/ 'default';
+            let boardNum =  /*[[${boardNum}]]*/ 'default';
+        
+            var imageTypeHand0111 = /*[[${imageTypeHand0111}]]*/ 'default';
+            var imageNumberHand0111 = /*[[${imageNumberHand0111}]]*/ 'default';
+            var imageTypeHand0112 = /*[[${imageTypeHand0112}]]*/ 'default';
+            var imageNumberHand0112 = /*[[${imageNumberHand0112}]]*/ 'default';
+            var imageTypeHand0121 = /*[[${imageTypeHand0121}]]*/ 'default';
+            var imageNumberHand0121 = /*[[${imageNumberHand0121}]]*/ 'default';
+            var imageTypeHand0122 = /*[[${imageTypeHand0122}]]*/ 'default';
+            var imageNumberHand0122 = /*[[${imageNumberHand0122}]]*/ 'default';
+            var imageTypeBoard011 = /*[[${imageTypeBoard011}]]*/ 'default';
+            var imageNumberBoard011 = /*[[${imageNumberBoard011}]]*/ 'default';
+            var imageTypeBoard012 = /*[[${imageTypeBoard012}]]*/ 'default';
+            var imageNumberBoard012 = /*[[${imageNumberBoard012}]]*/ 'default';
+            var imageTypeBoard013 = /*[[${imageTypeBoard013}]]*/ 'default';
+            var imageNumberBoard013 = /*[[${imageNumberBoard013}]]*/ 'default';
+            var imageTypeBoard014 = /*[[${imageTypeBoard014}]]*/ 'default';
+            var imageNumberBoard014 = /*[[${imageNumberBoard014}]]*/ 'default';
+            var imageTypeBoard015 = /*[[${imageTypeBoard015}]]*/ 'default';
+            var imageNumberBoard015 = /*[[${imageNumberBoard015}]]*/ 'default';
+
+            var imageTypeHand0211 = /*[[${imageTypeHand0211}]]*/ 'default';
+            var imageNumberHand0211 = /*[[${imageNumberHand0211}]]*/ 'default';
+            var imageTypeHand0212 = /*[[${imageTypeHand0212}]]*/ 'default';
+            var imageNumberHand0212 = /*[[${imageNumberHand0212}]]*/ 'default';
+            var imageTypeHand0221 = /*[[${imageTypeHand0221}]]*/ 'default';
+            var imageNumberHand0221 = /*[[${imageNumberHand0221}]]*/ 'default';
+            var imageTypeHand0222 = /*[[${imageTypeHand0222}]]*/ 'default';
+            var imageNumberHand0222 = /*[[${imageNumberHand0222}]]*/ 'default';
+            var imageTypeBoard021 = /*[[${imageTypeBoard021}]]*/ 'default';
+            var imageNumberBoard021 = /*[[${imageNumberBoard021}]]*/ 'default';
+            var imageTypeBoard022 = /*[[${imageTypeBoard022}]]*/ 'default';
+            var imageNumberBoard022 = /*[[${imageNumberBoard022}]]*/ 'default';
+            var imageTypeBoard023 = /*[[${imageTypeBoard023}]]*/ 'default';
+            var imageNumberBoard023 = /*[[${imageNumberBoard023}]]*/ 'default';
+            var imageTypeBoard024 = /*[[${imageTypeBoard024}]]*/ 'default';
+            var imageNumberBoard024 = /*[[${imageNumberBoard024}]]*/ 'default';
+            var imageTypeBoard025 = /*[[${imageTypeBoard025}]]*/ 'default';
+            var imageNumberBoard025 = /*[[${imageNumberBoard025}]]*/ 'default';
+
+            var imageTypeHand0311 = /*[[${imageTypeHand0311}]]*/ 'default';
+            var imageNumberHand0311 = /*[[${imageNumberHand0311}]]*/ 'default';
+            var imageTypeHand0312 = /*[[${imageTypeHand0312}]]*/ 'default';
+            var imageNumberHand0312 = /*[[${imageNumberHand0312}]]*/ 'default';
+            var imageTypeHand0321 = /*[[${imageTypeHand0321}]]*/ 'default';
+            var imageNumberHand0321 = /*[[${imageNumberHand0321}]]*/ 'default';
+            var imageTypeHand0322 = /*[[${imageTypeHand0322}]]*/ 'default';
+            var imageNumberHand0322 = /*[[${imageNumberHand0322}]]*/ 'default';
+            var imageTypeBoard031 = /*[[${imageTypeBoard031}]]*/ 'default';
+            var imageNumberBoard031 = /*[[${imageNumberBoard031}]]*/ 'default';
+            var imageTypeBoard032 = /*[[${imageTypeBoard032}]]*/ 'default';
+            var imageNumberBoard032 = /*[[${imageNumberBoard032}]]*/ 'default';
+            var imageTypeBoard033 = /*[[${imageTypeBoard033}]]*/ 'default';
+            var imageNumberBoard033 = /*[[${imageNumberBoard033}]]*/ 'default';
+            var imageTypeBoard034 = /*[[${imageTypeBoard034}]]*/ 'default';
+            var imageNumberBoard034 = /*[[${imageNumberBoard034}]]*/ 'default';
+            var imageTypeBoard035 = /*[[${imageTypeBoard035}]]*/ 'default';
+            var imageNumberBoard035 = /*[[${imageNumberBoard035}]]*/ 'default';
+
+            var imageTypeHand0411 = /*[[${imageTypeHand0411}]]*/ 'default';
+            var imageNumberHand0411 = /*[[${imageNumberHand0411}]]*/ 'default';
+            var imageTypeHand0412 = /*[[${imageTypeHand0412}]]*/ 'default';
+            var imageNumberHand0412 = /*[[${imageNumberHand0412}]]*/ 'default';
+            var imageTypeHand0421 = /*[[${imageTypeHand0421}]]*/ 'default';
+            var imageNumberHand0421 = /*[[${imageNumberHand0421}]]*/ 'default';
+            var imageTypeHand0422 = /*[[${imageTypeHand0422}]]*/ 'default';
+            var imageNumberHand0422 = /*[[${imageNumberHand0422}]]*/ 'default';
+            var imageTypeBoard041 = /*[[${imageTypeBoard041}]]*/ 'default';
+            var imageNumberBoard041 = /*[[${imageNumberBoard041}]]*/ 'default';
+            var imageTypeBoard042 = /*[[${imageTypeBoard042}]]*/ 'default';
+            var imageNumberBoard042 = /*[[${imageNumberBoard042}]]*/ 'default';
+            var imageTypeBoard043 = /*[[${imageTypeBoard043}]]*/ 'default';
+            var imageNumberBoard043 = /*[[${imageNumberBoard043}]]*/ 'default';
+            var imageTypeBoard044 = /*[[${imageTypeBoard044}]]*/ 'default';
+            var imageNumberBoard044 = /*[[${imageNumberBoard044}]]*/ 'default';
+            var imageTypeBoard045 = /*[[${imageTypeBoard045}]]*/ 'default';
+            var imageNumberBoard045 = /*[[${imageNumberBoard045}]]*/ 'default';
+
+            var imageTypeHand0511 = /*[[${imageTypeHand0511}]]*/ 'default';
+            var imageNumberHand0511 = /*[[${imageNumberHand0511}]]*/ 'default';
+            var imageTypeHand0512 = /*[[${imageTypeHand0512}]]*/ 'default';
+            var imageNumberHand0512 = /*[[${imageNumberHand0512}]]*/ 'default';
+            var imageTypeHand0521 = /*[[${imageTypeHand0521}]]*/ 'default';
+            var imageNumberHand0521 = /*[[${imageNumberHand0521}]]*/ 'default';
+            var imageTypeHand0522 = /*[[${imageTypeHand0522}]]*/ 'default';
+            var imageNumberHand0522 = /*[[${imageNumberHand0522}]]*/ 'default';
+            var imageTypeBoard051 = /*[[${imageTypeBoard051}]]*/ 'default';
+            var imageNumberBoard051 = /*[[${imageNumberBoard051}]]*/ 'default';
+            var imageTypeBoard052 = /*[[${imageTypeBoard052}]]*/ 'default';
+            var imageNumberBoard052 = /*[[${imageNumberBoard052}]]*/ 'default';
+            var imageTypeBoard053 = /*[[${imageTypeBoard053}]]*/ 'default';
+            var imageNumberBoard053 = /*[[${imageNumberBoard053}]]*/ 'default';
+            var imageTypeBoard054 = /*[[${imageTypeBoard054}]]*/ 'default';
+            var imageNumberBoard054 = /*[[${imageNumberBoard054}]]*/ 'default';
+            var imageTypeBoard055 = /*[[${imageTypeBoard055}]]*/ 'default';
+            var imageNumberBoard055 = /*[[${imageNumberBoard055}]]*/ 'default';
+
+            var imageTypeHand0611 = /*[[${imageTypeHand0611}]]*/ 'default';
+            var imageNumberHand0611 = /*[[${imageNumberHand0611}]]*/ 'default';
+            var imageTypeHand0612 = /*[[${imageTypeHand0612}]]*/ 'default';
+            var imageNumberHand0612 = /*[[${imageNumberHand0612}]]*/ 'default';
+            var imageTypeHand0621 = /*[[${imageTypeHand0621}]]*/ 'default';
+            var imageNumberHand0621 = /*[[${imageNumberHand0621}]]*/ 'default';
+            var imageTypeHand0622 = /*[[${imageTypeHand0622}]]*/ 'default';
+            var imageNumberHand0622 = /*[[${imageNumberHand0622}]]*/ 'default';
+            var imageTypeBoard061 = /*[[${imageTypeBoard061}]]*/ 'default';
+            var imageNumberBoard061 = /*[[${imageNumberBoard061}]]*/ 'default';
+            var imageTypeBoard062 = /*[[${imageTypeBoard062}]]*/ 'default';
+            var imageNumberBoard062 = /*[[${imageNumberBoard062}]]*/ 'default';
+            var imageTypeBoard063 = /*[[${imageTypeBoard063}]]*/ 'default';
+            var imageNumberBoard063 = /*[[${imageNumberBoard063}]]*/ 'default';
+            var imageTypeBoard064 = /*[[${imageTypeBoard064}]]*/ 'default';
+            var imageNumberBoard064 = /*[[${imageNumberBoard064}]]*/ 'default';
+            var imageTypeBoard065 = /*[[${imageTypeBoard065}]]*/ 'default';
+            var imageNumberBoard065 = /*[[${imageNumberBoard065}]]*/ 'default';
+
+            var imageTypeHand0711 = /*[[${imageTypeHand0711}]]*/ 'default';
+            var imageNumberHand0711 = /*[[${imageNumberHand0711}]]*/ 'default';
+            var imageTypeHand0712 = /*[[${imageTypeHand0712}]]*/ 'default';
+            var imageNumberHand0712 = /*[[${imageNumberHand0712}]]*/ 'default';
+            var imageTypeHand0721 = /*[[${imageTypeHand0721}]]*/ 'default';
+            var imageNumberHand0721 = /*[[${imageNumberHand0721}]]*/ 'default';
+            var imageTypeHand0722 = /*[[${imageTypeHand0722}]]*/ 'default';
+            var imageNumberHand0722 = /*[[${imageNumberHand0722}]]*/ 'default';
+            var imageTypeBoard071 = /*[[${imageTypeBoard071}]]*/ 'default';
+            var imageNumberBoard071 = /*[[${imageNumberBoard071}]]*/ 'default';
+            var imageTypeBoard072 = /*[[${imageTypeBoard072}]]*/ 'default';
+            var imageNumberBoard072 = /*[[${imageNumberBoard072}]]*/ 'default';
+            var imageTypeBoard073 = /*[[${imageTypeBoard073}]]*/ 'default';
+            var imageNumberBoard073 = /*[[${imageNumberBoard073}]]*/ 'default';
+            var imageTypeBoard074 = /*[[${imageTypeBoard074}]]*/ 'default';
+            var imageNumberBoard074 = /*[[${imageNumberBoard074}]]*/ 'default';
+            var imageTypeBoard075 = /*[[${imageTypeBoard075}]]*/ 'default';
+            var imageNumberBoard075 = /*[[${imageNumberBoard075}]]*/ 'default';
+
+            var imageTypeHand0811 = /*[[${imageTypeHand0811}]]*/ 'default';
+            var imageNumberHand0811 = /*[[${imageNumberHand0811}]]*/ 'default';
+            var imageTypeHand0812 = /*[[${imageTypeHand0812}]]*/ 'default';
+            var imageNumberHand0812 = /*[[${imageNumberHand0812}]]*/ 'default';
+            var imageTypeHand0821 = /*[[${imageTypeHand0821}]]*/ 'default';
+            var imageNumberHand0821 = /*[[${imageNumberHand0821}]]*/ 'default';
+            var imageTypeHand0822 = /*[[${imageTypeHand0822}]]*/ 'default';
+            var imageNumberHand0822 = /*[[${imageNumberHand0822}]]*/ 'default';
+            var imageTypeBoard081 = /*[[${imageTypeBoard081}]]*/ 'default';
+            var imageNumberBoard081 = /*[[${imageNumberBoard081}]]*/ 'default';
+            var imageTypeBoard082 = /*[[${imageTypeBoard082}]]*/ 'default';
+            var imageNumberBoard082 = /*[[${imageNumberBoard082}]]*/ 'default';
+            var imageTypeBoard083 = /*[[${imageTypeBoard083}]]*/ 'default';
+            var imageNumberBoard083 = /*[[${imageNumberBoard083}]]*/ 'default';
+            var imageTypeBoard084 = /*[[${imageTypeBoard084}]]*/ 'default';
+            var imageNumberBoard084 = /*[[${imageNumberBoard084}]]*/ 'default';
+            var imageTypeBoard085 = /*[[${imageTypeBoard085}]]*/ 'default';
+            var imageNumberBoard085 = /*[[${imageNumberBoard085}]]*/ 'default';
+
+            var imageTypeHand0911 = /*[[${imageTypeHand0911}]]*/ 'default';
+            var imageNumberHand0911 = /*[[${imageNumberHand0911}]]*/ 'default';
+            var imageTypeHand0912 = /*[[${imageTypeHand0912}]]*/ 'default';
+            var imageNumberHand0912 = /*[[${imageNumberHand0912}]]*/ 'default';
+            var imageTypeHand0921 = /*[[${imageTypeHand0921}]]*/ 'default';
+            var imageNumberHand0921 = /*[[${imageNumberHand0921}]]*/ 'default';
+            var imageTypeHand0922 = /*[[${imageTypeHand0922}]]*/ 'default';
+            var imageNumberHand0922 = /*[[${imageNumberHand0922}]]*/ 'default';
+            var imageTypeBoard091 = /*[[${imageTypeBoard091}]]*/ 'default';
+            var imageNumberBoard091 = /*[[${imageNumberBoard091}]]*/ 'default';
+            var imageTypeBoard092 = /*[[${imageTypeBoard092}]]*/ 'default';
+            var imageNumberBoard092 = /*[[${imageNumberBoard092}]]*/ 'default';
+            var imageTypeBoard093 = /*[[${imageTypeBoard093}]]*/ 'default';
+            var imageNumberBoard093 = /*[[${imageNumberBoard093}]]*/ 'default';
+            var imageTypeBoard094 = /*[[${imageTypeBoard094}]]*/ 'default';
+            var imageNumberBoard094 = /*[[${imageNumberBoard094}]]*/ 'default';
+            var imageTypeBoard095 = /*[[${imageTypeBoard095}]]*/ 'default';
+            var imageNumberBoard095 = /*[[${imageNumberBoard095}]]*/ 'default';
+
+            var imageTypeHand1011 = /*[[${imageTypeHand1011}]]*/ 'default';
+            var imageNumberHand1011 = /*[[${imageNumberHand1011}]]*/ 'default';
+            var imageTypeHand1012 = /*[[${imageTypeHand1012}]]*/ 'default';
+            var imageNumberHand1012 = /*[[${imageNumberHand1012}]]*/ 'default';
+            var imageTypeHand1021 = /*[[${imageTypeHand1021}]]*/ 'default';
+            var imageNumberHand1021 = /*[[${imageNumberHand1021}]]*/ 'default';
+            var imageTypeHand1022 = /*[[${imageTypeHand1022}]]*/ 'default';
+            var imageNumberHand1022 = /*[[${imageNumberHand1022}]]*/ 'default';
+            var imageTypeBoard101 = /*[[${imageTypeBoard101}]]*/ 'default';
+            var imageNumberBoard101 = /*[[${imageNumberBoard101}]]*/ 'default';
+            var imageTypeBoard102 = /*[[${imageTypeBoard102}]]*/ 'default';
+            var imageNumberBoard102 = /*[[${imageNumberBoard102}]]*/ 'default';
+            var imageTypeBoard103 = /*[[${imageTypeBoard103}]]*/ 'default';
+            var imageNumberBoard103 = /*[[${imageNumberBoard103}]]*/ 'default';
+            var imageTypeBoard104 = /*[[${imageTypeBoard104}]]*/ 'default';
+            var imageNumberBoard104 = /*[[${imageNumberBoard104}]]*/ 'default';
+            var imageTypeBoard105 = /*[[${imageTypeBoard105}]]*/ 'default';
+            var imageNumberBoard105 = /*[[${imageNumberBoard105}]]*/ 'default';
+
+            var imageTypeHand1111 = /*[[${imageTypeHand1111}]]*/ 'default';
+            var imageNumberHand1111 = /*[[${imageNumberHand1111}]]*/ 'default';
+            var imageTypeHand1112 = /*[[${imageTypeHand1112}]]*/ 'default';
+            var imageNumberHand1112 = /*[[${imageNumberHand1112}]]*/ 'default';
+            var imageTypeHand1121 = /*[[${imageTypeHand1121}]]*/ 'default';
+            var imageNumberHand1121 = /*[[${imageNumberHand1121}]]*/ 'default';
+            var imageTypeHand1122 = /*[[${imageTypeHand1122}]]*/ 'default';
+            var imageNumberHand1122 = /*[[${imageNumberHand1122}]]*/ 'default';
+            var imageTypeBoard111 = /*[[${imageTypeBoard111}]]*/ 'default';
+            var imageNumberBoard111 = /*[[${imageNumberBoard111}]]*/ 'default';
+            var imageTypeBoard112 = /*[[${imageTypeBoard112}]]*/ 'default';
+            var imageNumberBoard112 = /*[[${imageNumberBoard112}]]*/ 'default';
+            var imageTypeBoard113 = /*[[${imageTypeBoard113}]]*/ 'default';
+            var imageNumberBoard113 = /*[[${imageNumberBoard113}]]*/ 'default';
+            var imageTypeBoard114 = /*[[${imageTypeBoard114}]]*/ 'default';
+            var imageNumberBoard114 = /*[[${imageNumberBoard114}]]*/ 'default';
+            var imageTypeBoard115 = /*[[${imageTypeBoard115}]]*/ 'default';
+            var imageNumberBoard115 = /*[[${imageNumberBoard115}]]*/ 'default';
+
+            var imageTypeHand1211 = /*[[${imageTypeHand1211}]]*/ 'default';
+            var imageNumberHand1211 = /*[[${imageNumberHand1211}]]*/ 'default';
+            var imageTypeHand1212 = /*[[${imageTypeHand1212}]]*/ 'default';
+            var imageNumberHand1212 = /*[[${imageNumberHand1212}]]*/ 'default';
+            var imageTypeHand1221 = /*[[${imageTypeHand1221}]]*/ 'default';
+            var imageNumberHand1221 = /*[[${imageNumberHand1221}]]*/ 'default';
+            var imageTypeHand1222 = /*[[${imageTypeHand1222}]]*/ 'default';
+            var imageNumberHand1222 = /*[[${imageNumberHand1222}]]*/ 'default';
+            var imageTypeBoard121 = /*[[${imageTypeBoard121}]]*/ 'default';
+            var imageNumberBoard121 = /*[[${imageNumberBoard121}]]*/ 'default';
+            var imageTypeBoard122 = /*[[${imageTypeBoard122}]]*/ 'default';
+            var imageNumberBoard122 = /*[[${imageNumberBoard122}]]*/ 'default';
+            var imageTypeBoard123 = /*[[${imageTypeBoard123}]]*/ 'default';
+            var imageNumberBoard123 = /*[[${imageNumberBoard123}]]*/ 'default';
+            var imageTypeBoard124 = /*[[${imageTypeBoard124}]]*/ 'default';
+            var imageNumberBoard124 = /*[[${imageNumberBoard124}]]*/ 'default';
+            var imageTypeBoard125 = /*[[${imageTypeBoard125}]]*/ 'default';
+            var imageNumberBoard125 = /*[[${imageNumberBoard125}]]*/ 'default';
+
+            var imageTypeHand1311 = /*[[${imageTypeHand1311}]]*/ 'default';
+            var imageNumberHand1311 = /*[[${imageNumberHand1311}]]*/ 'default';
+            var imageTypeHand1312 = /*[[${imageTypeHand1312}]]*/ 'default';
+            var imageNumberHand1312 = /*[[${imageNumberHand1312}]]*/ 'default';
+            var imageTypeHand1321 = /*[[${imageTypeHand1321}]]*/ 'default';
+            var imageNumberHand1321 = /*[[${imageNumberHand1321}]]*/ 'default';
+            var imageTypeHand1322 = /*[[${imageTypeHand1322}]]*/ 'default';
+            var imageNumberHand1322 = /*[[${imageNumberHand1322}]]*/ 'default';
+            var imageTypeBoard131 = /*[[${imageTypeBoard131}]]*/ 'default';
+            var imageNumberBoard131 = /*[[${imageNumberBoard131}]]*/ 'default';
+            var imageTypeBoard132 = /*[[${imageTypeBoard132}]]*/ 'default';
+            var imageNumberBoard132 = /*[[${imageNumberBoard132}]]*/ 'default';
+            var imageTypeBoard133 = /*[[${imageTypeBoard133}]]*/ 'default';
+            var imageNumberBoard133 = /*[[${imageNumberBoard133}]]*/ 'default';
+            var imageTypeBoard134 = /*[[${imageTypeBoard134}]]*/ 'default';
+            var imageNumberBoard134 = /*[[${imageNumberBoard134}]]*/ 'default';
+            var imageTypeBoard135 = /*[[${imageTypeBoard135}]]*/ 'default';
+            var imageNumberBoard135 = /*[[${imageNumberBoard135}]]*/ 'default';
+
+            var imageTypeHand1411 = /*[[${imageTypeHand1411}]]*/ 'default';
+            var imageNumberHand1411 = /*[[${imageNumberHand1411}]]*/ 'default';
+            var imageTypeHand1412 = /*[[${imageTypeHand1412}]]*/ 'default';
+            var imageNumberHand1412 = /*[[${imageNumberHand1412}]]*/ 'default';
+            var imageTypeHand1421 = /*[[${imageTypeHand1421}]]*/ 'default';
+            var imageNumberHand1421 = /*[[${imageNumberHand1421}]]*/ 'default';
+            var imageTypeHand1422 = /*[[${imageTypeHand1422}]]*/ 'default';
+            var imageNumberHand1422 = /*[[${imageNumberHand1422}]]*/ 'default';
+            var imageTypeBoard141 = /*[[${imageTypeBoard141}]]*/ 'default';
+            var imageNumberBoard141 = /*[[${imageNumberBoard141}]]*/ 'default';
+            var imageTypeBoard142 = /*[[${imageTypeBoard142}]]*/ 'default';
+            var imageNumberBoard142 = /*[[${imageNumberBoard142}]]*/ 'default';
+            var imageTypeBoard143 = /*[[${imageTypeBoard143}]]*/ 'default';
+            var imageNumberBoard143 = /*[[${imageNumberBoard143}]]*/ 'default';
+            var imageTypeBoard144 = /*[[${imageTypeBoard144}]]*/ 'default';
+            var imageNumberBoard144 = /*[[${imageNumberBoard144}]]*/ 'default';
+            var imageTypeBoard145 = /*[[${imageTypeBoard145}]]*/ 'default';
+            var imageNumberBoard145 = /*[[${imageNumberBoard145}]]*/ 'default';
+
+            var imageTypeHand1511 = /*[[${imageTypeHand1511}]]*/ 'default';
+            var imageNumberHand1511 = /*[[${imageNumberHand1511}]]*/ 'default';
+            var imageTypeHand1512 = /*[[${imageTypeHand1512}]]*/ 'default';
+            var imageNumberHand1512 = /*[[${imageNumberHand1512}]]*/ 'default';
+            var imageTypeHand1521 = /*[[${imageTypeHand1521}]]*/ 'default';
+            var imageNumberHand1521 = /*[[${imageNumberHand1521}]]*/ 'default';
+            var imageTypeHand1522 = /*[[${imageTypeHand1522}]]*/ 'default';
+            var imageNumberHand1522 = /*[[${imageNumberHand1522}]]*/ 'default';
+            var imageTypeBoard151 = /*[[${imageTypeBoard151}]]*/ 'default';
+            var imageNumberBoard151 = /*[[${imageNumberBoard151}]]*/ 'default';
+            var imageTypeBoard152 = /*[[${imageTypeBoard152}]]*/ 'default';
+            var imageNumberBoard152 = /*[[${imageNumberBoard152}]]*/ 'default';
+            var imageTypeBoard153 = /*[[${imageTypeBoard153}]]*/ 'default';
+            var imageNumberBoard153 = /*[[${imageNumberBoard153}]]*/ 'default';
+            var imageTypeBoard154 = /*[[${imageTypeBoard154}]]*/ 'default';
+            var imageNumberBoard154 = /*[[${imageNumberBoard154}]]*/ 'default';
+            var imageTypeBoard155 = /*[[${imageTypeBoard155}]]*/ 'default';
+            var imageNumberBoard155 = /*[[${imageNumberBoard155}]]*/ 'default';
+
+            var imageTypeHand1611 = /*[[${imageTypeHand1611}]]*/ 'default';
+            var imageNumberHand1611 = /*[[${imageNumberHand1611}]]*/ 'default';
+            var imageTypeHand1612 = /*[[${imageTypeHand1612}]]*/ 'default';
+            var imageNumberHand1612 = /*[[${imageNumberHand1612}]]*/ 'default';
+            var imageTypeHand1621 = /*[[${imageTypeHand1621}]]*/ 'default';
+            var imageNumberHand1621 = /*[[${imageNumberHand1621}]]*/ 'default';
+            var imageTypeHand1622 = /*[[${imageTypeHand1622}]]*/ 'default';
+            var imageNumberHand1622 = /*[[${imageNumberHand1622}]]*/ 'default';
+            var imageTypeBoard161 = /*[[${imageTypeBoard161}]]*/ 'default';
+            var imageNumberBoard161 = /*[[${imageNumberBoard161}]]*/ 'default';
+            var imageTypeBoard162 = /*[[${imageTypeBoard162}]]*/ 'default';
+            var imageNumberBoard162 = /*[[${imageNumberBoard162}]]*/ 'default';
+            var imageTypeBoard163 = /*[[${imageTypeBoard163}]]*/ 'default';
+            var imageNumberBoard163 = /*[[${imageNumberBoard163}]]*/ 'default';
+            var imageTypeBoard164 = /*[[${imageTypeBoard164}]]*/ 'default';
+            var imageNumberBoard164 = /*[[${imageNumberBoard164}]]*/ 'default';
+            var imageTypeBoard165 = /*[[${imageTypeBoard165}]]*/ 'default';
+            var imageNumberBoard165 = /*[[${imageNumberBoard165}]]*/ 'default';
+
+            var imageTypeHand1711 = /*[[${imageTypeHand1711}]]*/ 'default';
+            var imageNumberHand1711 = /*[[${imageNumberHand1711}]]*/ 'default';
+            var imageTypeHand1712 = /*[[${imageTypeHand1712}]]*/ 'default';
+            var imageNumberHand1712 = /*[[${imageNumberHand1712}]]*/ 'default';
+            var imageTypeHand1721 = /*[[${imageTypeHand1721}]]*/ 'default';
+            var imageNumberHand1721 = /*[[${imageNumberHand1721}]]*/ 'default';
+            var imageTypeHand1722 = /*[[${imageTypeHand1722}]]*/ 'default';
+            var imageNumberHand1722 = /*[[${imageNumberHand1722}]]*/ 'default';
+            var imageTypeBoard171 = /*[[${imageTypeBoard171}]]*/ 'default';
+            var imageNumberBoard171 = /*[[${imageNumberBoard171}]]*/ 'default';
+            var imageTypeBoard172 = /*[[${imageTypeBoard172}]]*/ 'default';
+            var imageNumberBoard172 = /*[[${imageNumberBoard172}]]*/ 'default';
+            var imageTypeBoard173 = /*[[${imageTypeBoard173}]]*/ 'default';
+            var imageNumberBoard173 = /*[[${imageNumberBoard173}]]*/ 'default';
+            var imageTypeBoard174 = /*[[${imageTypeBoard174}]]*/ 'default';
+            var imageNumberBoard174 = /*[[${imageNumberBoard174}]]*/ 'default';
+            var imageTypeBoard175 = /*[[${imageTypeBoard175}]]*/ 'default';
+            var imageNumberBoard175 = /*[[${imageNumberBoard175}]]*/ 'default';
+
+            var imageTypeHand1811 = /*[[${imageTypeHand1811}]]*/ 'default';
+            var imageNumberHand1811 = /*[[${imageNumberHand1811}]]*/ 'default';
+            var imageTypeHand1812 = /*[[${imageTypeHand1812}]]*/ 'default';
+            var imageNumberHand1812 = /*[[${imageNumberHand1812}]]*/ 'default';
+            var imageTypeHand1821 = /*[[${imageTypeHand1821}]]*/ 'default';
+            var imageNumberHand1821 = /*[[${imageNumberHand1821}]]*/ 'default';
+            var imageTypeHand1822 = /*[[${imageTypeHand1822}]]*/ 'default';
+            var imageNumberHand1822 = /*[[${imageNumberHand1822}]]*/ 'default';
+            var imageTypeBoard181 = /*[[${imageTypeBoard181}]]*/ 'default';
+            var imageNumberBoard181 = /*[[${imageNumberBoard181}]]*/ 'default';
+            var imageTypeBoard182 = /*[[${imageTypeBoard182}]]*/ 'default';
+            var imageNumberBoard182 = /*[[${imageNumberBoard182}]]*/ 'default';
+            var imageTypeBoard183 = /*[[${imageTypeBoard183}]]*/ 'default';
+            var imageNumberBoard183 = /*[[${imageNumberBoard183}]]*/ 'default';
+            var imageTypeBoard184 = /*[[${imageTypeBoard184}]]*/ 'default';
+            var imageNumberBoard184 = /*[[${imageNumberBoard184}]]*/ 'default';
+            var imageTypeBoard185 = /*[[${imageTypeBoard185}]]*/ 'default';
+            var imageNumberBoard185 = /*[[${imageNumberBoard185}]]*/ 'default';
+
+            var imageTypeHand1911 = /*[[${imageTypeHand1911}]]*/ 'default';
+            var imageNumberHand1911 = /*[[${imageNumberHand1911}]]*/ 'default';
+            var imageTypeHand1912 = /*[[${imageTypeHand1912}]]*/ 'default';
+            var imageNumberHand1912 = /*[[${imageNumberHand1912}]]*/ 'default';
+            var imageTypeHand1921 = /*[[${imageTypeHand1921}]]*/ 'default';
+            var imageNumberHand1921 = /*[[${imageNumberHand1921}]]*/ 'default';
+            var imageTypeHand1922 = /*[[${imageTypeHand1922}]]*/ 'default';
+            var imageNumberHand1922 = /*[[${imageNumberHand1922}]]*/ 'default';
+            var imageTypeBoard191 = /*[[${imageTypeBoard191}]]*/ 'default';
+            var imageNumberBoard191 = /*[[${imageNumberBoard191}]]*/ 'default';
+            var imageTypeBoard192 = /*[[${imageTypeBoard192}]]*/ 'default';
+            var imageNumberBoard192 = /*[[${imageNumberBoard192}]]*/ 'default';
+            var imageTypeBoard193 = /*[[${imageTypeBoard193}]]*/ 'default';
+            var imageNumberBoard193 = /*[[${imageNumberBoard193}]]*/ 'default';
+            var imageTypeBoard194 = /*[[${imageTypeBoard194}]]*/ 'default';
+            var imageNumberBoard194 = /*[[${imageNumberBoard194}]]*/ 'default';
+            var imageTypeBoard195 = /*[[${imageTypeBoard195}]]*/ 'default';
+            var imageNumberBoard195 = /*[[${imageNumberBoard195}]]*/ 'default';
+
+            var imageTypeHand2011 = /*[[${imageTypeHand2011}]]*/ 'default';
+            var imageNumberHand2011 = /*[[${imageNumberHand2011}]]*/ 'default';
+            var imageTypeHand2012 = /*[[${imageTypeHand2012}]]*/ 'default';
+            var imageNumberHand2012 = /*[[${imageNumberHand2012}]]*/ 'default';
+            var imageTypeHand2021 = /*[[${imageTypeHand2021}]]*/ 'default';
+            var imageNumberHand2021 = /*[[${imageNumberHand2021}]]*/ 'default';
+            var imageTypeHand2022 = /*[[${imageTypeHand2022}]]*/ 'default';
+            var imageNumberHand2022 = /*[[${imageNumberHand2022}]]*/ 'default';
+            var imageTypeBoard201 = /*[[${imageTypeBoard201}]]*/ 'default';
+            var imageNumberBoard201 = /*[[${imageNumberBoard201}]]*/ 'default';
+            var imageTypeBoard202 = /*[[${imageTypeBoard202}]]*/ 'default';
+            var imageNumberBoard202 = /*[[${imageNumberBoard202}]]*/ 'default';
+            var imageTypeBoard203 = /*[[${imageTypeBoard203}]]*/ 'default';
+            var imageNumberBoard203 = /*[[${imageNumberBoard203}]]*/ 'default';
+            var imageTypeBoard204 = /*[[${imageTypeBoard204}]]*/ 'default';
+            var imageNumberBoard204 = /*[[${imageNumberBoard204}]]*/ 'default';
+            var imageTypeBoard205 = /*[[${imageTypeBoard205}]]*/ 'default';
+            var imageNumberBoard205 = /*[[${imageNumberBoard205}]]*/ 'default';
+
+            var imageTypeHand2111 = /*[[${imageTypeHand2111}]]*/ 'default';
+            var imageNumberHand2111 = /*[[${imageNumberHand2111}]]*/ 'default';
+            var imageTypeHand2112 = /*[[${imageTypeHand2112}]]*/ 'default';
+            var imageNumberHand2112 = /*[[${imageNumberHand2112}]]*/ 'default';
+            var imageTypeHand2121 = /*[[${imageTypeHand2121}]]*/ 'default';
+            var imageNumberHand2121 = /*[[${imageNumberHand2121}]]*/ 'default';
+            var imageTypeHand2122 = /*[[${imageTypeHand2122}]]*/ 'default';
+            var imageNumberHand2122 = /*[[${imageNumberHand2122}]]*/ 'default';
+            var imageTypeBoard211 = /*[[${imageTypeBoard211}]]*/ 'default';
+            var imageNumberBoard211 = /*[[${imageNumberBoard211}]]*/ 'default';
+            var imageTypeBoard212 = /*[[${imageTypeBoard212}]]*/ 'default';
+            var imageNumberBoard212 = /*[[${imageNumberBoard212}]]*/ 'default';
+            var imageTypeBoard213 = /*[[${imageTypeBoard213}]]*/ 'default';
+            var imageNumberBoard213 = /*[[${imageNumberBoard213}]]*/ 'default';
+            var imageTypeBoard214 = /*[[${imageTypeBoard214}]]*/ 'default';
+            var imageNumberBoard214 = /*[[${imageNumberBoard214}]]*/ 'default';
+            var imageTypeBoard215 = /*[[${imageTypeBoard215}]]*/ 'default';
+            var imageNumberBoard215 = /*[[${imageNumberBoard215}]]*/ 'default';
+
+            var imageTypeHand2211 = /*[[${imageTypeHand2211}]]*/ 'default';
+            var imageNumberHand2211 = /*[[${imageNumberHand2211}]]*/ 'default';
+            var imageTypeHand2212 = /*[[${imageTypeHand2212}]]*/ 'default';
+            var imageNumberHand2212 = /*[[${imageNumberHand2212}]]*/ 'default';
+            var imageTypeHand2221 = /*[[${imageTypeHand2221}]]*/ 'default';
+            var imageNumberHand2221 = /*[[${imageNumberHand2221}]]*/ 'default';
+            var imageTypeHand2222 = /*[[${imageTypeHand2222}]]*/ 'default';
+            var imageNumberHand2222 = /*[[${imageNumberHand2222}]]*/ 'default';
+            var imageTypeBoard221 = /*[[${imageTypeBoard221}]]*/ 'default';
+            var imageNumberBoard221 = /*[[${imageNumberBoard221}]]*/ 'default';
+            var imageTypeBoard222 = /*[[${imageTypeBoard222}]]*/ 'default';
+            var imageNumberBoard222 = /*[[${imageNumberBoard222}]]*/ 'default';
+            var imageTypeBoard223 = /*[[${imageTypeBoard223}]]*/ 'default';
+            var imageNumberBoard223 = /*[[${imageNumberBoard223}]]*/ 'default';
+            var imageTypeBoard224 = /*[[${imageTypeBoard224}]]*/ 'default';
+            var imageNumberBoard224 = /*[[${imageNumberBoard224}]]*/ 'default';
+            var imageTypeBoard225 = /*[[${imageTypeBoard225}]]*/ 'default';
+            var imageNumberBoard225 = /*[[${imageNumberBoard225}]]*/ 'default';
+
+            var imageTypeHand2311 = /*[[${imageTypeHand2311}]]*/ 'default';
+            var imageNumberHand2311 = /*[[${imageNumberHand2311}]]*/ 'default';
+            var imageTypeHand2312 = /*[[${imageTypeHand2312}]]*/ 'default';
+            var imageNumberHand2312 = /*[[${imageNumberHand2312}]]*/ 'default';
+            var imageTypeHand2321 = /*[[${imageTypeHand2321}]]*/ 'default';
+            var imageNumberHand2321 = /*[[${imageNumberHand2321}]]*/ 'default';
+            var imageTypeHand2322 = /*[[${imageTypeHand2322}]]*/ 'default';
+            var imageNumberHand2322 = /*[[${imageNumberHand2322}]]*/ 'default';
+            var imageTypeBoard231 = /*[[${imageTypeBoard231}]]*/ 'default';
+            var imageNumberBoard231 = /*[[${imageNumberBoard231}]]*/ 'default';
+            var imageTypeBoard232 = /*[[${imageTypeBoard232}]]*/ 'default';
+            var imageNumberBoard232 = /*[[${imageNumberBoard232}]]*/ 'default';
+            var imageTypeBoard233 = /*[[${imageTypeBoard233}]]*/ 'default';
+            var imageNumberBoard233 = /*[[${imageNumberBoard233}]]*/ 'default';
+            var imageTypeBoard234 = /*[[${imageTypeBoard234}]]*/ 'default';
+            var imageNumberBoard234 = /*[[${imageNumberBoard234}]]*/ 'default';
+            var imageTypeBoard235 = /*[[${imageTypeBoard235}]]*/ 'default';
+            var imageNumberBoard235 = /*[[${imageNumberBoard235}]]*/ 'default';
+
+            var imageTypeHand2411 = /*[[${imageTypeHand2411}]]*/ 'default';
+            var imageNumberHand2411 = /*[[${imageNumberHand2411}]]*/ 'default';
+            var imageTypeHand2412 = /*[[${imageTypeHand2412}]]*/ 'default';
+            var imageNumberHand2412 = /*[[${imageNumberHand2412}]]*/ 'default';
+            var imageTypeHand2421 = /*[[${imageTypeHand2421}]]*/ 'default';
+            var imageNumberHand2421 = /*[[${imageNumberHand2421}]]*/ 'default';
+            var imageTypeHand2422 = /*[[${imageTypeHand2422}]]*/ 'default';
+            var imageNumberHand2422 = /*[[${imageNumberHand2422}]]*/ 'default';
+            var imageTypeBoard241 = /*[[${imageTypeBoard241}]]*/ 'default';
+            var imageNumberBoard241 = /*[[${imageNumberBoard241}]]*/ 'default';
+            var imageTypeBoard242 = /*[[${imageTypeBoard242}]]*/ 'default';
+            var imageNumberBoard242 = /*[[${imageNumberBoard242}]]*/ 'default';
+            var imageTypeBoard243 = /*[[${imageTypeBoard243}]]*/ 'default';
+            var imageNumberBoard243 = /*[[${imageNumberBoard243}]]*/ 'default';
+            var imageTypeBoard244 = /*[[${imageTypeBoard244}]]*/ 'default';
+            var imageNumberBoard244 = /*[[${imageNumberBoard244}]]*/ 'default';
+            var imageTypeBoard245 = /*[[${imageTypeBoard245}]]*/ 'default';
+            var imageNumberBoard245 = /*[[${imageNumberBoard245}]]*/ 'default';
+
+            var imageTypeHand2511 = /*[[${imageTypeHand2511}]]*/ 'default';
+            var imageNumberHand2511 = /*[[${imageNumberHand2511}]]*/ 'default';
+            var imageTypeHand2512 = /*[[${imageTypeHand2512}]]*/ 'default';
+            var imageNumberHand2512 = /*[[${imageNumberHand2512}]]*/ 'default';
+            var imageTypeHand2521 = /*[[${imageTypeHand2521}]]*/ 'default';
+            var imageNumberHand2521 = /*[[${imageNumberHand2521}]]*/ 'default';
+            var imageTypeHand2522 = /*[[${imageTypeHand2522}]]*/ 'default';
+            var imageNumberHand2522 = /*[[${imageNumberHand2522}]]*/ 'default';
+            var imageTypeBoard251 = /*[[${imageTypeBoard251}]]*/ 'default';
+            var imageNumberBoard251 = /*[[${imageNumberBoard251}]]*/ 'default';
+            var imageTypeBoard252 = /*[[${imageTypeBoard252}]]*/ 'default';
+            var imageNumberBoard252 = /*[[${imageNumberBoard252}]]*/ 'default';
+            var imageTypeBoard253 = /*[[${imageTypeBoard253}]]*/ 'default';
+            var imageNumberBoard253 = /*[[${imageNumberBoard253}]]*/ 'default';
+            var imageTypeBoard254 = /*[[${imageTypeBoard254}]]*/ 'default';
+            var imageNumberBoard254 = /*[[${imageNumberBoard254}]]*/ 'default';
+            var imageTypeBoard255 = /*[[${imageTypeBoard255}]]*/ 'default';
+            var imageNumberBoard255 = /*[[${imageNumberBoard255}]]*/ 'default';
+
+            var imageTypeHand2611 = /*[[${imageTypeHand2611}]]*/ 'default';
+            var imageNumberHand2611 = /*[[${imageNumberHand2611}]]*/ 'default';
+            var imageTypeHand2612 = /*[[${imageTypeHand2612}]]*/ 'default';
+            var imageNumberHand2612 = /*[[${imageNumberHand2612}]]*/ 'default';
+            var imageTypeHand2621 = /*[[${imageTypeHand2621}]]*/ 'default';
+            var imageNumberHand2621 = /*[[${imageNumberHand2621}]]*/ 'default';
+            var imageTypeHand2622 = /*[[${imageTypeHand2622}]]*/ 'default';
+            var imageNumberHand2622 = /*[[${imageNumberHand2622}]]*/ 'default';
+            var imageTypeBoard261 = /*[[${imageTypeBoard261}]]*/ 'default';
+            var imageNumberBoard261 = /*[[${imageNumberBoard261}]]*/ 'default';
+            var imageTypeBoard262 = /*[[${imageTypeBoard262}]]*/ 'default';
+            var imageNumberBoard262 = /*[[${imageNumberBoard262}]]*/ 'default';
+            var imageTypeBoard263 = /*[[${imageTypeBoard263}]]*/ 'default';
+            var imageNumberBoard263 = /*[[${imageNumberBoard263}]]*/ 'default';
+            var imageTypeBoard264 = /*[[${imageTypeBoard264}]]*/ 'default';
+            var imageNumberBoard264 = /*[[${imageNumberBoard264}]]*/ 'default';
+            var imageTypeBoard265 = /*[[${imageTypeBoard265}]]*/ 'default';
+            var imageNumberBoard265 = /*[[${imageNumberBoard265}]]*/ 'default';
+
+            var imageTypeHand2711 = /*[[${imageTypeHand2711}]]*/ 'default';
+            var imageNumberHand2711 = /*[[${imageNumberHand2711}]]*/ 'default';
+            var imageTypeHand2712 = /*[[${imageTypeHand2712}]]*/ 'default';
+            var imageNumberHand2712 = /*[[${imageNumberHand2712}]]*/ 'default';
+            var imageTypeHand2721 = /*[[${imageTypeHand2721}]]*/ 'default';
+            var imageNumberHand2721 = /*[[${imageNumberHand2721}]]*/ 'default';
+            var imageTypeHand2722 = /*[[${imageTypeHand2722}]]*/ 'default';
+            var imageNumberHand2722 = /*[[${imageNumberHand2722}]]*/ 'default';
+            var imageTypeBoard271 = /*[[${imageTypeBoard271}]]*/ 'default';
+            var imageNumberBoard271 = /*[[${imageNumberBoard271}]]*/ 'default';
+            var imageTypeBoard272 = /*[[${imageTypeBoard272}]]*/ 'default';
+            var imageNumberBoard272 = /*[[${imageNumberBoard272}]]*/ 'default';
+            var imageTypeBoard273 = /*[[${imageTypeBoard273}]]*/ 'default';
+            var imageNumberBoard273 = /*[[${imageNumberBoard273}]]*/ 'default';
+            var imageTypeBoard274 = /*[[${imageTypeBoard274}]]*/ 'default';
+            var imageNumberBoard274 = /*[[${imageNumberBoard274}]]*/ 'default';
+            var imageTypeBoard275 = /*[[${imageTypeBoard275}]]*/ 'default';
+            var imageNumberBoard275 = /*[[${imageNumberBoard275}]]*/ 'default';
+
+            var imageTypeHand2811 = /*[[${imageTypeHand2811}]]*/ 'default';
+            var imageNumberHand2811 = /*[[${imageNumberHand2811}]]*/ 'default';
+            var imageTypeHand2812 = /*[[${imageTypeHand2812}]]*/ 'default';
+            var imageNumberHand2812 = /*[[${imageNumberHand2812}]]*/ 'default';
+            var imageTypeHand2821 = /*[[${imageTypeHand2821}]]*/ 'default';
+            var imageNumberHand2821 = /*[[${imageNumberHand2821}]]*/ 'default';
+            var imageTypeHand2822 = /*[[${imageTypeHand2822}]]*/ 'default';
+            var imageNumberHand2822 = /*[[${imageNumberHand2822}]]*/ 'default';
+            var imageTypeBoard281 = /*[[${imageTypeBoard281}]]*/ 'default';
+            var imageNumberBoard281 = /*[[${imageNumberBoard281}]]*/ 'default';
+            var imageTypeBoard282 = /*[[${imageTypeBoard282}]]*/ 'default';
+            var imageNumberBoard282 = /*[[${imageNumberBoard282}]]*/ 'default';
+            var imageTypeBoard283 = /*[[${imageTypeBoard283}]]*/ 'default';
+            var imageNumberBoard283 = /*[[${imageNumberBoard283}]]*/ 'default';
+            var imageTypeBoard284 = /*[[${imageTypeBoard284}]]*/ 'default';
+            var imageNumberBoard284 = /*[[${imageNumberBoard284}]]*/ 'default';
+            var imageTypeBoard285 = /*[[${imageTypeBoard285}]]*/ 'default';
+            var imageNumberBoard285 = /*[[${imageNumberBoard285}]]*/ 'default';
+
+            var imageTypeHand2911 = /*[[${imageTypeHand2911}]]*/ 'default';
+            var imageNumberHand2911 = /*[[${imageNumberHand2911}]]*/ 'default';
+            var imageTypeHand2912 = /*[[${imageTypeHand2912}]]*/ 'default';
+            var imageNumberHand2912 = /*[[${imageNumberHand2912}]]*/ 'default';
+            var imageTypeHand2921 = /*[[${imageTypeHand2921}]]*/ 'default';
+            var imageNumberHand2921 = /*[[${imageNumberHand2921}]]*/ 'default';
+            var imageTypeHand2922 = /*[[${imageTypeHand2922}]]*/ 'default';
+            var imageNumberHand2922 = /*[[${imageNumberHand2922}]]*/ 'default';
+            var imageTypeBoard291 = /*[[${imageTypeBoard291}]]*/ 'default';
+            var imageNumberBoard291 = /*[[${imageNumberBoard291}]]*/ 'default';
+            var imageTypeBoard292 = /*[[${imageTypeBoard292}]]*/ 'default';
+            var imageNumberBoard292 = /*[[${imageNumberBoard292}]]*/ 'default';
+            var imageTypeBoard293 = /*[[${imageTypeBoard293}]]*/ 'default';
+            var imageNumberBoard293 = /*[[${imageNumberBoard293}]]*/ 'default';
+            var imageTypeBoard294 = /*[[${imageTypeBoard294}]]*/ 'default';
+            var imageNumberBoard294 = /*[[${imageNumberBoard294}]]*/ 'default';
+            var imageTypeBoard295 = /*[[${imageTypeBoard295}]]*/ 'default';
+            var imageNumberBoard295 = /*[[${imageNumberBoard295}]]*/ 'default';
+
+            var imageTypeHand3011 = /*[[${imageTypeHand3011}]]*/ 'default';
+            var imageNumberHand3011 = /*[[${imageNumberHand3011}]]*/ 'default';
+            var imageTypeHand3012 = /*[[${imageTypeHand3012}]]*/ 'default';
+            var imageNumberHand3012 = /*[[${imageNumberHand3012}]]*/ 'default';
+            var imageTypeHand3021 = /*[[${imageTypeHand3021}]]*/ 'default';
+            var imageNumberHand3021 = /*[[${imageNumberHand3021}]]*/ 'default';
+            var imageTypeHand3022 = /*[[${imageTypeHand3022}]]*/ 'default';
+            var imageNumberHand3022 = /*[[${imageNumberHand3022}]]*/ 'default';
+            var imageTypeBoard301 = /*[[${imageTypeBoard301}]]*/ 'default';
+            var imageNumberBoard301 = /*[[${imageNumberBoard301}]]*/ 'default';
+            var imageTypeBoard302 = /*[[${imageTypeBoard302}]]*/ 'default';
+            var imageNumberBoard302 = /*[[${imageNumberBoard302}]]*/ 'default';
+            var imageTypeBoard303 = /*[[${imageTypeBoard303}]]*/ 'default';
+            var imageNumberBoard303 = /*[[${imageNumberBoard303}]]*/ 'default';
+            var imageTypeBoard304 = /*[[${imageTypeBoard304}]]*/ 'default';
+            var imageNumberBoard304 = /*[[${imageNumberBoard304}]]*/ 'default';
+            var imageTypeBoard305 = /*[[${imageTypeBoard305}]]*/ 'default';
+            var imageNumberBoard305 = /*[[${imageNumberBoard305}]]*/ 'default';
+
+            var imageTypeHand3111 = /*[[${imageTypeHand3111}]]*/ 'default';
+            var imageNumberHand3111 = /*[[${imageNumberHand3111}]]*/ 'default';
+            var imageTypeHand3112 = /*[[${imageTypeHand3112}]]*/ 'default';
+            var imageNumberHand3112 = /*[[${imageNumberHand3112}]]*/ 'default';
+            var imageTypeHand3121 = /*[[${imageTypeHand3121}]]*/ 'default';
+            var imageNumberHand3121 = /*[[${imageNumberHand3121}]]*/ 'default';
+            var imageTypeHand3122 = /*[[${imageTypeHand3122}]]*/ 'default';
+            var imageNumberHand3122 = /*[[${imageNumberHand3122}]]*/ 'default';
+            var imageTypeBoard311 = /*[[${imageTypeBoard311}]]*/ 'default';
+            var imageNumberBoard311 = /*[[${imageNumberBoard311}]]*/ 'default';
+            var imageTypeBoard312 = /*[[${imageTypeBoard312}]]*/ 'default';
+            var imageNumberBoard312 = /*[[${imageNumberBoard312}]]*/ 'default';
+            var imageTypeBoard313 = /*[[${imageTypeBoard313}]]*/ 'default';
+            var imageNumberBoard313 = /*[[${imageNumberBoard313}]]*/ 'default';
+            var imageTypeBoard314 = /*[[${imageTypeBoard314}]]*/ 'default';
+            var imageNumberBoard314 = /*[[${imageNumberBoard314}]]*/ 'default';
+            var imageTypeBoard315 = /*[[${imageTypeBoard315}]]*/ 'default';
+            var imageNumberBoard315 = /*[[${imageNumberBoard315}]]*/ 'default';
+
+            var imageTypeHand3211 = /*[[${imageTypeHand3211}]]*/ 'default';
+            var imageNumberHand3211 = /*[[${imageNumberHand3211}]]*/ 'default';
+            var imageTypeHand3212 = /*[[${imageTypeHand3212}]]*/ 'default';
+            var imageNumberHand3212 = /*[[${imageNumberHand3212}]]*/ 'default';
+            var imageTypeHand3221 = /*[[${imageTypeHand3221}]]*/ 'default';
+            var imageNumberHand3221 = /*[[${imageNumberHand3221}]]*/ 'default';
+            var imageTypeHand3222 = /*[[${imageTypeHand3222}]]*/ 'default';
+            var imageNumberHand3222 = /*[[${imageNumberHand3222}]]*/ 'default';
+            var imageTypeBoard321 = /*[[${imageTypeBoard321}]]*/ 'default';
+            var imageNumberBoard321 = /*[[${imageNumberBoard321}]]*/ 'default';
+            var imageTypeBoard322 = /*[[${imageTypeBoard322}]]*/ 'default';
+            var imageNumberBoard322 = /*[[${imageNumberBoard322}]]*/ 'default';
+            var imageTypeBoard323 = /*[[${imageTypeBoard323}]]*/ 'default';
+            var imageNumberBoard323 = /*[[${imageNumberBoard323}]]*/ 'default';
+            var imageTypeBoard324 = /*[[${imageTypeBoard324}]]*/ 'default';
+            var imageNumberBoard324 = /*[[${imageNumberBoard324}]]*/ 'default';
+            var imageTypeBoard325 = /*[[${imageTypeBoard325}]]*/ 'default';
+            var imageNumberBoard325 = /*[[${imageNumberBoard325}]]*/ 'default';
+
+            var imageTypeHand3311 = /*[[${imageTypeHand3311}]]*/ 'default';
+            var imageNumberHand3311 = /*[[${imageNumberHand3311}]]*/ 'default';
+            var imageTypeHand3312 = /*[[${imageTypeHand3312}]]*/ 'default';
+            var imageNumberHand3312 = /*[[${imageNumberHand3312}]]*/ 'default';
+            var imageTypeHand3321 = /*[[${imageTypeHand3321}]]*/ 'default';
+            var imageNumberHand3321 = /*[[${imageNumberHand3321}]]*/ 'default';
+            var imageTypeHand3322 = /*[[${imageTypeHand3322}]]*/ 'default';
+            var imageNumberHand3322 = /*[[${imageNumberHand3322}]]*/ 'default';
+            var imageTypeBoard331 = /*[[${imageTypeBoard331}]]*/ 'default';
+            var imageNumberBoard331 = /*[[${imageNumberBoard331}]]*/ 'default';
+            var imageTypeBoard332 = /*[[${imageTypeBoard332}]]*/ 'default';
+            var imageNumberBoard332 = /*[[${imageNumberBoard332}]]*/ 'default';
+            var imageTypeBoard333 = /*[[${imageTypeBoard333}]]*/ 'default';
+            var imageNumberBoard333 = /*[[${imageNumberBoard333}]]*/ 'default';
+            var imageTypeBoard334 = /*[[${imageTypeBoard334}]]*/ 'default';
+            var imageNumberBoard334 = /*[[${imageNumberBoard334}]]*/ 'default';
+            var imageTypeBoard335 = /*[[${imageTypeBoard335}]]*/ 'default';
+            var imageNumberBoard335 = /*[[${imageNumberBoard335}]]*/ 'default';
+
+            var imageTypeHand3411 = /*[[${imageTypeHand3411}]]*/ 'default';
+            var imageNumberHand3411 = /*[[${imageNumberHand3411}]]*/ 'default';
+            var imageTypeHand3412 = /*[[${imageTypeHand3412}]]*/ 'default';
+            var imageNumberHand3412 = /*[[${imageNumberHand3412}]]*/ 'default';
+            var imageTypeHand3421 = /*[[${imageTypeHand3421}]]*/ 'default';
+            var imageNumberHand3421 = /*[[${imageNumberHand3421}]]*/ 'default';
+            var imageTypeHand3422 = /*[[${imageTypeHand3422}]]*/ 'default';
+            var imageNumberHand3422 = /*[[${imageNumberHand3422}]]*/ 'default';
+            var imageTypeBoard341 = /*[[${imageTypeBoard341}]]*/ 'default';
+            var imageNumberBoard341 = /*[[${imageNumberBoard341}]]*/ 'default';
+            var imageTypeBoard342 = /*[[${imageTypeBoard342}]]*/ 'default';
+            var imageNumberBoard342 = /*[[${imageNumberBoard342}]]*/ 'default';
+            var imageTypeBoard343 = /*[[${imageTypeBoard343}]]*/ 'default';
+            var imageNumberBoard343 = /*[[${imageNumberBoard343}]]*/ 'default';
+            var imageTypeBoard344 = /*[[${imageTypeBoard344}]]*/ 'default';
+            var imageNumberBoard344 = /*[[${imageNumberBoard344}]]*/ 'default';
+            var imageTypeBoard345 = /*[[${imageTypeBoard345}]]*/ 'default';
+            var imageNumberBoard345 = /*[[${imageNumberBoard345}]]*/ 'default';
+
+            var imageTypeHand3511 = /*[[${imageTypeHand3511}]]*/ 'default';
+            var imageNumberHand3511 = /*[[${imageNumberHand3511}]]*/ 'default';
+            var imageTypeHand3512 = /*[[${imageTypeHand3512}]]*/ 'default';
+            var imageNumberHand3512 = /*[[${imageNumberHand3512}]]*/ 'default';
+            var imageTypeHand3521 = /*[[${imageTypeHand3521}]]*/ 'default';
+            var imageNumberHand3521 = /*[[${imageNumberHand3521}]]*/ 'default';
+            var imageTypeHand3522 = /*[[${imageTypeHand3522}]]*/ 'default';
+            var imageNumberHand3522 = /*[[${imageNumberHand3522}]]*/ 'default';
+            var imageTypeBoard351 = /*[[${imageTypeBoard351}]]*/ 'default';
+            var imageNumberBoard351 = /*[[${imageNumberBoard351}]]*/ 'default';
+            var imageTypeBoard352 = /*[[${imageTypeBoard352}]]*/ 'default';
+            var imageNumberBoard352 = /*[[${imageNumberBoard352}]]*/ 'default';
+            var imageTypeBoard353 = /*[[${imageTypeBoard353}]]*/ 'default';
+            var imageNumberBoard353 = /*[[${imageNumberBoard353}]]*/ 'default';
+            var imageTypeBoard354 = /*[[${imageTypeBoard354}]]*/ 'default';
+            var imageNumberBoard354 = /*[[${imageNumberBoard354}]]*/ 'default';
+            var imageTypeBoard355 = /*[[${imageTypeBoard355}]]*/ 'default';
+            var imageNumberBoard355 = /*[[${imageNumberBoard355}]]*/ 'default';
+
+            var imageTypeHand3611 = /*[[${imageTypeHand3611}]]*/ 'default';
+            var imageNumberHand3611 = /*[[${imageNumberHand3611}]]*/ 'default';
+            var imageTypeHand3612 = /*[[${imageTypeHand3612}]]*/ 'default';
+            var imageNumberHand3612 = /*[[${imageNumberHand3612}]]*/ 'default';
+            var imageTypeHand3621 = /*[[${imageTypeHand3621}]]*/ 'default';
+            var imageNumberHand3621 = /*[[${imageNumberHand3621}]]*/ 'default';
+            var imageTypeHand3622 = /*[[${imageTypeHand3622}]]*/ 'default';
+            var imageNumberHand3622 = /*[[${imageNumberHand3622}]]*/ 'default';
+            var imageTypeBoard361 = /*[[${imageTypeBoard361}]]*/ 'default';
+            var imageNumberBoard361 = /*[[${imageNumberBoard361}]]*/ 'default';
+            var imageTypeBoard362 = /*[[${imageTypeBoard362}]]*/ 'default';
+            var imageNumberBoard362 = /*[[${imageNumberBoard362}]]*/ 'default';
+            var imageTypeBoard363 = /*[[${imageTypeBoard363}]]*/ 'default';
+            var imageNumberBoard363 = /*[[${imageNumberBoard363}]]*/ 'default';
+            var imageTypeBoard364 = /*[[${imageTypeBoard364}]]*/ 'default';
+            var imageNumberBoard364 = /*[[${imageNumberBoard364}]]*/ 'default';
+            var imageTypeBoard365 = /*[[${imageTypeBoard365}]]*/ 'default';
+            var imageNumberBoard365 = /*[[${imageNumberBoard365}]]*/ 'default';
+
+            var imageTypeHand3711 = /*[[${imageTypeHand3711}]]*/ 'default';
+            var imageNumberHand3711 = /*[[${imageNumberHand3711}]]*/ 'default';
+            var imageTypeHand3712 = /*[[${imageTypeHand3712}]]*/ 'default';
+            var imageNumberHand3712 = /*[[${imageNumberHand3712}]]*/ 'default';
+            var imageTypeHand3721 = /*[[${imageTypeHand3721}]]*/ 'default';
+            var imageNumberHand3721 = /*[[${imageNumberHand3721}]]*/ 'default';
+            var imageTypeHand3722 = /*[[${imageTypeHand3722}]]*/ 'default';
+            var imageNumberHand3722 = /*[[${imageNumberHand3722}]]*/ 'default';
+            var imageTypeBoard371 = /*[[${imageTypeBoard371}]]*/ 'default';
+            var imageNumberBoard371 = /*[[${imageNumberBoard371}]]*/ 'default';
+            var imageTypeBoard372 = /*[[${imageTypeBoard372}]]*/ 'default';
+            var imageNumberBoard372 = /*[[${imageNumberBoard372}]]*/ 'default';
+            var imageTypeBoard373 = /*[[${imageTypeBoard373}]]*/ 'default';
+            var imageNumberBoard373 = /*[[${imageNumberBoard373}]]*/ 'default';
+            var imageTypeBoard374 = /*[[${imageTypeBoard374}]]*/ 'default';
+            var imageNumberBoard374 = /*[[${imageNumberBoard374}]]*/ 'default';
+            var imageTypeBoard375 = /*[[${imageTypeBoard375}]]*/ 'default';
+            var imageNumberBoard375 = /*[[${imageNumberBoard375}]]*/ 'default';
+
+            var imageTypeHand3811 = /*[[${imageTypeHand3811}]]*/ 'default';
+            var imageNumberHand3811 = /*[[${imageNumberHand3811}]]*/ 'default';
+            var imageTypeHand3812 = /*[[${imageTypeHand3812}]]*/ 'default';
+            var imageNumberHand3812 = /*[[${imageNumberHand3812}]]*/ 'default';
+            var imageTypeHand3821 = /*[[${imageTypeHand3821}]]*/ 'default';
+            var imageNumberHand3821 = /*[[${imageNumberHand3821}]]*/ 'default';
+            var imageTypeHand3822 = /*[[${imageTypeHand3822}]]*/ 'default';
+            var imageNumberHand3822 = /*[[${imageNumberHand3822}]]*/ 'default';
+            var imageTypeBoard381 = /*[[${imageTypeBoard381}]]*/ 'default';
+            var imageNumberBoard381 = /*[[${imageNumberBoard381}]]*/ 'default';
+            var imageTypeBoard382 = /*[[${imageTypeBoard382}]]*/ 'default';
+            var imageNumberBoard382 = /*[[${imageNumberBoard382}]]*/ 'default';
+            var imageTypeBoard383 = /*[[${imageTypeBoard383}]]*/ 'default';
+            var imageNumberBoard383 = /*[[${imageNumberBoard383}]]*/ 'default';
+            var imageTypeBoard384 = /*[[${imageTypeBoard384}]]*/ 'default';
+            var imageNumberBoard384 = /*[[${imageNumberBoard384}]]*/ 'default';
+            var imageTypeBoard385 = /*[[${imageTypeBoard385}]]*/ 'default';
+            var imageNumberBoard385 = /*[[${imageNumberBoard385}]]*/ 'default';
+
+            var imageTypeHand3911 = /*[[${imageTypeHand3911}]]*/ 'default';
+            var imageNumberHand3911 = /*[[${imageNumberHand3911}]]*/ 'default';
+            var imageTypeHand3912 = /*[[${imageTypeHand3912}]]*/ 'default';
+            var imageNumberHand3912 = /*[[${imageNumberHand3912}]]*/ 'default';
+            var imageTypeHand3921 = /*[[${imageTypeHand3921}]]*/ 'default';
+            var imageNumberHand3921 = /*[[${imageNumberHand3921}]]*/ 'default';
+            var imageTypeHand3922 = /*[[${imageTypeHand3922}]]*/ 'default';
+            var imageNumberHand3922 = /*[[${imageNumberHand3922}]]*/ 'default';
+            var imageTypeBoard391 = /*[[${imageTypeBoard391}]]*/ 'default';
+            var imageNumberBoard391 = /*[[${imageNumberBoard391}]]*/ 'default';
+            var imageTypeBoard392 = /*[[${imageTypeBoard392}]]*/ 'default';
+            var imageNumberBoard392 = /*[[${imageNumberBoard392}]]*/ 'default';
+            var imageTypeBoard393 = /*[[${imageTypeBoard393}]]*/ 'default';
+            var imageNumberBoard393 = /*[[${imageNumberBoard393}]]*/ 'default';
+            var imageTypeBoard394 = /*[[${imageTypeBoard394}]]*/ 'default';
+            var imageNumberBoard394 = /*[[${imageNumberBoard394}]]*/ 'default';
+            var imageTypeBoard395 = /*[[${imageTypeBoard395}]]*/ 'default';
+            var imageNumberBoard395 = /*[[${imageNumberBoard395}]]*/ 'default';
+
+            var imageTypeHand4011 = /*[[${imageTypeHand4011}]]*/ 'default';
+            var imageNumberHand4011 = /*[[${imageNumberHand4011}]]*/ 'default';
+            var imageTypeHand4012 = /*[[${imageTypeHand4012}]]*/ 'default';
+            var imageNumberHand4012 = /*[[${imageNumberHand4012}]]*/ 'default';
+            var imageTypeHand4021 = /*[[${imageTypeHand4021}]]*/ 'default';
+            var imageNumberHand4021 = /*[[${imageNumberHand4021}]]*/ 'default';
+            var imageTypeHand4022 = /*[[${imageTypeHand4022}]]*/ 'default';
+            var imageNumberHand4022 = /*[[${imageNumberHand4022}]]*/ 'default';
+            var imageTypeBoard401 = /*[[${imageTypeBoard401}]]*/ 'default';
+            var imageNumberBoard401 = /*[[${imageNumberBoard401}]]*/ 'default';
+            var imageTypeBoard402 = /*[[${imageTypeBoard402}]]*/ 'default';
+            var imageNumberBoard402 = /*[[${imageNumberBoard402}]]*/ 'default';
+            var imageTypeBoard403 = /*[[${imageTypeBoard403}]]*/ 'default';
+            var imageNumberBoard403 = /*[[${imageNumberBoard403}]]*/ 'default';
+            var imageTypeBoard404 = /*[[${imageTypeBoard404}]]*/ 'default';
+            var imageNumberBoard404 = /*[[${imageNumberBoard404}]]*/ 'default';
+            var imageTypeBoard405 = /*[[${imageTypeBoard405}]]*/ 'default';
+            var imageNumberBoard405 = /*[[${imageNumberBoard405}]]*/ 'default';
+
+            var imageTypeHand4111 = /*[[${imageTypeHand4111}]]*/ 'default';
+            var imageNumberHand4111 = /*[[${imageNumberHand4111}]]*/ 'default';
+            var imageTypeHand4112 = /*[[${imageTypeHand4112}]]*/ 'default';
+            var imageNumberHand4112 = /*[[${imageNumberHand4112}]]*/ 'default';
+            var imageTypeHand4121 = /*[[${imageTypeHand4121}]]*/ 'default';
+            var imageNumberHand4121 = /*[[${imageNumberHand4121}]]*/ 'default';
+            var imageTypeHand4122 = /*[[${imageTypeHand4122}]]*/ 'default';
+            var imageNumberHand4122 = /*[[${imageNumberHand4122}]]*/ 'default';
+            var imageTypeBoard411 = /*[[${imageTypeBoard411}]]*/ 'default';
+            var imageNumberBoard411 = /*[[${imageNumberBoard411}]]*/ 'default';
+            var imageTypeBoard412 = /*[[${imageTypeBoard412}]]*/ 'default';
+            var imageNumberBoard412 = /*[[${imageNumberBoard412}]]*/ 'default';
+            var imageTypeBoard413 = /*[[${imageTypeBoard413}]]*/ 'default';
+            var imageNumberBoard413 = /*[[${imageNumberBoard413}]]*/ 'default';
+            var imageTypeBoard414 = /*[[${imageTypeBoard414}]]*/ 'default';
+            var imageNumberBoard414 = /*[[${imageNumberBoard414}]]*/ 'default';
+            var imageTypeBoard415 = /*[[${imageTypeBoard415}]]*/ 'default';
+            var imageNumberBoard415 = /*[[${imageNumberBoard415}]]*/ 'default';
+
+            var imageTypeHand4211 = /*[[${imageTypeHand4211}]]*/ 'default';
+            var imageNumberHand4211 = /*[[${imageNumberHand4211}]]*/ 'default';
+            var imageTypeHand4212 = /*[[${imageTypeHand4212}]]*/ 'default';
+            var imageNumberHand4212 = /*[[${imageNumberHand4212}]]*/ 'default';
+            var imageTypeHand4221 = /*[[${imageTypeHand4221}]]*/ 'default';
+            var imageNumberHand4221 = /*[[${imageNumberHand4221}]]*/ 'default';
+            var imageTypeHand4222 = /*[[${imageTypeHand4222}]]*/ 'default';
+            var imageNumberHand4222 = /*[[${imageNumberHand4222}]]*/ 'default';
+            var imageTypeBoard421 = /*[[${imageTypeBoard421}]]*/ 'default';
+            var imageNumberBoard421 = /*[[${imageNumberBoard421}]]*/ 'default';
+            var imageTypeBoard422 = /*[[${imageTypeBoard422}]]*/ 'default';
+            var imageNumberBoard422 = /*[[${imageNumberBoard422}]]*/ 'default';
+            var imageTypeBoard423 = /*[[${imageTypeBoard423}]]*/ 'default';
+            var imageNumberBoard423 = /*[[${imageNumberBoard423}]]*/ 'default';
+            var imageTypeBoard424 = /*[[${imageTypeBoard424}]]*/ 'default';
+            var imageNumberBoard424 = /*[[${imageNumberBoard424}]]*/ 'default';
+            var imageTypeBoard425 = /*[[${imageTypeBoard425}]]*/ 'default';
+            var imageNumberBoard425 = /*[[${imageNumberBoard425}]]*/ 'default';
+
+            var imageTypeHand4311 = /*[[${imageTypeHand4311}]]*/ 'default';
+            var imageNumberHand4311 = /*[[${imageNumberHand4311}]]*/ 'default';
+            var imageTypeHand4312 = /*[[${imageTypeHand4312}]]*/ 'default';
+            var imageNumberHand4312 = /*[[${imageNumberHand4312}]]*/ 'default';
+            var imageTypeHand4321 = /*[[${imageTypeHand4321}]]*/ 'default';
+            var imageNumberHand4321 = /*[[${imageNumberHand4321}]]*/ 'default';
+            var imageTypeHand4322 = /*[[${imageTypeHand4322}]]*/ 'default';
+            var imageNumberHand4322 = /*[[${imageNumberHand4322}]]*/ 'default';
+            var imageTypeBoard431 = /*[[${imageTypeBoard431}]]*/ 'default';
+            var imageNumberBoard431 = /*[[${imageNumberBoard431}]]*/ 'default';
+            var imageTypeBoard432 = /*[[${imageTypeBoard432}]]*/ 'default';
+            var imageNumberBoard432 = /*[[${imageNumberBoard432}]]*/ 'default';
+            var imageTypeBoard433 = /*[[${imageTypeBoard433}]]*/ 'default';
+            var imageNumberBoard433 = /*[[${imageNumberBoard433}]]*/ 'default';
+            var imageTypeBoard434 = /*[[${imageTypeBoard434}]]*/ 'default';
+            var imageNumberBoard434 = /*[[${imageNumberBoard434}]]*/ 'default';
+            var imageTypeBoard435 = /*[[${imageTypeBoard435}]]*/ 'default';
+            var imageNumberBoard435 = /*[[${imageNumberBoard435}]]*/ 'default';
+
+            var imageTypeHand4411 = /*[[${imageTypeHand4411}]]*/ 'default';
+            var imageNumberHand4411 = /*[[${imageNumberHand4411}]]*/ 'default';
+            var imageTypeHand4412 = /*[[${imageTypeHand4412}]]*/ 'default';
+            var imageNumberHand4412 = /*[[${imageNumberHand4412}]]*/ 'default';
+            var imageTypeHand4421 = /*[[${imageTypeHand4421}]]*/ 'default';
+            var imageNumberHand4421 = /*[[${imageNumberHand4421}]]*/ 'default';
+            var imageTypeHand4422 = /*[[${imageTypeHand4422}]]*/ 'default';
+            var imageNumberHand4422 = /*[[${imageNumberHand4422}]]*/ 'default';
+            var imageTypeBoard441 = /*[[${imageTypeBoard441}]]*/ 'default';
+            var imageNumberBoard441 = /*[[${imageNumberBoard441}]]*/ 'default';
+            var imageTypeBoard442 = /*[[${imageTypeBoard442}]]*/ 'default';
+            var imageNumberBoard442 = /*[[${imageNumberBoard442}]]*/ 'default';
+            var imageTypeBoard443 = /*[[${imageTypeBoard443}]]*/ 'default';
+            var imageNumberBoard443 = /*[[${imageNumberBoard443}]]*/ 'default';
+            var imageTypeBoard444 = /*[[${imageTypeBoard444}]]*/ 'default';
+            var imageNumberBoard444 = /*[[${imageNumberBoard444}]]*/ 'default';
+            var imageTypeBoard445 = /*[[${imageTypeBoard445}]]*/ 'default';
+            var imageNumberBoard445 = /*[[${imageNumberBoard445}]]*/ 'default';
+
+            var imageTypeHand4511 = /*[[${imageTypeHand4511}]]*/ 'default';
+            var imageNumberHand4511 = /*[[${imageNumberHand4511}]]*/ 'default';
+            var imageTypeHand4512 = /*[[${imageTypeHand4512}]]*/ 'default';
+            var imageNumberHand4512 = /*[[${imageNumberHand4512}]]*/ 'default';
+            var imageTypeHand4521 = /*[[${imageTypeHand4521}]]*/ 'default';
+            var imageNumberHand4521 = /*[[${imageNumberHand4521}]]*/ 'default';
+            var imageTypeHand4522 = /*[[${imageTypeHand4522}]]*/ 'default';
+            var imageNumberHand4522 = /*[[${imageNumberHand4522}]]*/ 'default';
+            var imageTypeBoard451 = /*[[${imageTypeBoard451}]]*/ 'default';
+            var imageNumberBoard451 = /*[[${imageNumberBoard451}]]*/ 'default';
+            var imageTypeBoard452 = /*[[${imageTypeBoard452}]]*/ 'default';
+            var imageNumberBoard452 = /*[[${imageNumberBoard452}]]*/ 'default';
+            var imageTypeBoard453 = /*[[${imageTypeBoard453}]]*/ 'default';
+            var imageNumberBoard453 = /*[[${imageNumberBoard453}]]*/ 'default';
+            var imageTypeBoard454 = /*[[${imageTypeBoard454}]]*/ 'default';
+            var imageNumberBoard454 = /*[[${imageNumberBoard454}]]*/ 'default';
+            var imageTypeBoard455 = /*[[${imageTypeBoard455}]]*/ 'default';
+            var imageNumberBoard455 = /*[[${imageNumberBoard455}]]*/ 'default';
+
+            var imageTypeHand4611 = /*[[${imageTypeHand4611}]]*/ 'default';
+            var imageNumberHand4611 = /*[[${imageNumberHand4611}]]*/ 'default';
+            var imageTypeHand4612 = /*[[${imageTypeHand4612}]]*/ 'default';
+            var imageNumberHand4612 = /*[[${imageNumberHand4612}]]*/ 'default';
+            var imageTypeHand4621 = /*[[${imageTypeHand4621}]]*/ 'default';
+            var imageNumberHand4621 = /*[[${imageNumberHand4621}]]*/ 'default';
+            var imageTypeHand4622 = /*[[${imageTypeHand4622}]]*/ 'default';
+            var imageNumberHand4622 = /*[[${imageNumberHand4622}]]*/ 'default';
+            var imageTypeBoard461 = /*[[${imageTypeBoard461}]]*/ 'default';
+            var imageNumberBoard461 = /*[[${imageNumberBoard461}]]*/ 'default';
+            var imageTypeBoard462 = /*[[${imageTypeBoard462}]]*/ 'default';
+            var imageNumberBoard462 = /*[[${imageNumberBoard462}]]*/ 'default';
+            var imageTypeBoard463 = /*[[${imageTypeBoard463}]]*/ 'default';
+            var imageNumberBoard463 = /*[[${imageNumberBoard463}]]*/ 'default';
+            var imageTypeBoard464 = /*[[${imageTypeBoard464}]]*/ 'default';
+            var imageNumberBoard464 = /*[[${imageNumberBoard464}]]*/ 'default';
+            var imageTypeBoard465 = /*[[${imageTypeBoard465}]]*/ 'default';
+            var imageNumberBoard465 = /*[[${imageNumberBoard465}]]*/ 'default';
+
+            var imageTypeHand4711 = /*[[${imageTypeHand4711}]]*/ 'default';
+            var imageNumberHand4711 = /*[[${imageNumberHand4711}]]*/ 'default';
+            var imageTypeHand4712 = /*[[${imageTypeHand4712}]]*/ 'default';
+            var imageNumberHand4712 = /*[[${imageNumberHand4712}]]*/ 'default';
+            var imageTypeHand4721 = /*[[${imageTypeHand4721}]]*/ 'default';
+            var imageNumberHand4721 = /*[[${imageNumberHand4721}]]*/ 'default';
+            var imageTypeHand4722 = /*[[${imageTypeHand4722}]]*/ 'default';
+            var imageNumberHand4722 = /*[[${imageNumberHand4722}]]*/ 'default';
+            var imageTypeBoard471 = /*[[${imageTypeBoard471}]]*/ 'default';
+            var imageNumberBoard471 = /*[[${imageNumberBoard471}]]*/ 'default';
+            var imageTypeBoard472 = /*[[${imageTypeBoard472}]]*/ 'default';
+            var imageNumberBoard472 = /*[[${imageNumberBoard472}]]*/ 'default';
+            var imageTypeBoard473 = /*[[${imageTypeBoard473}]]*/ 'default';
+            var imageNumberBoard473 = /*[[${imageNumberBoard473}]]*/ 'default';
+            var imageTypeBoard474 = /*[[${imageTypeBoard474}]]*/ 'default';
+            var imageNumberBoard474 = /*[[${imageNumberBoard474}]]*/ 'default';
+            var imageTypeBoard475 = /*[[${imageTypeBoard475}]]*/ 'default';
+            var imageNumberBoard475 = /*[[${imageNumberBoard475}]]*/ 'default';
+
+            var imageTypeHand4811 = /*[[${imageTypeHand4811}]]*/ 'default';
+            var imageNumberHand4811 = /*[[${imageNumberHand4811}]]*/ 'default';
+            var imageTypeHand4812 = /*[[${imageTypeHand4812}]]*/ 'default';
+            var imageNumberHand4812 = /*[[${imageNumberHand4812}]]*/ 'default';
+            var imageTypeHand4821 = /*[[${imageTypeHand4821}]]*/ 'default';
+            var imageNumberHand4821 = /*[[${imageNumberHand4821}]]*/ 'default';
+            var imageTypeHand4822 = /*[[${imageTypeHand4822}]]*/ 'default';
+            var imageNumberHand4822 = /*[[${imageNumberHand4822}]]*/ 'default';
+            var imageTypeBoard481 = /*[[${imageTypeBoard481}]]*/ 'default';
+            var imageNumberBoard481 = /*[[${imageNumberBoard481}]]*/ 'default';
+            var imageTypeBoard482 = /*[[${imageTypeBoard482}]]*/ 'default';
+            var imageNumberBoard482 = /*[[${imageNumberBoard482}]]*/ 'default';
+            var imageTypeBoard483 = /*[[${imageTypeBoard483}]]*/ 'default';
+            var imageNumberBoard483 = /*[[${imageNumberBoard483}]]*/ 'default';
+            var imageTypeBoard484 = /*[[${imageTypeBoard484}]]*/ 'default';
+            var imageNumberBoard484 = /*[[${imageNumberBoard484}]]*/ 'default';
+            var imageTypeBoard485 = /*[[${imageTypeBoard485}]]*/ 'default';
+            var imageNumberBoard485 = /*[[${imageNumberBoard485}]]*/ 'default';
+
+            var imageTypeHand4911 = /*[[${imageTypeHand4911}]]*/ 'default';
+            var imageNumberHand4911 = /*[[${imageNumberHand4911}]]*/ 'default';
+            var imageTypeHand4912 = /*[[${imageTypeHand4912}]]*/ 'default';
+            var imageNumberHand4912 = /*[[${imageNumberHand4912}]]*/ 'default';
+            var imageTypeHand4921 = /*[[${imageTypeHand4921}]]*/ 'default';
+            var imageNumberHand4921 = /*[[${imageNumberHand4921}]]*/ 'default';
+            var imageTypeHand4922 = /*[[${imageTypeHand4922}]]*/ 'default';
+            var imageNumberHand4922 = /*[[${imageNumberHand4922}]]*/ 'default';
+            var imageTypeBoard491 = /*[[${imageTypeBoard491}]]*/ 'default';
+            var imageNumberBoard491 = /*[[${imageNumberBoard491}]]*/ 'default';
+            var imageTypeBoard492 = /*[[${imageTypeBoard492}]]*/ 'default';
+            var imageNumberBoard492 = /*[[${imageNumberBoard492}]]*/ 'default';
+            var imageTypeBoard493 = /*[[${imageTypeBoard493}]]*/ 'default';
+            var imageNumberBoard493 = /*[[${imageNumberBoard493}]]*/ 'default';
+            var imageTypeBoard494 = /*[[${imageTypeBoard494}]]*/ 'default';
+            var imageNumberBoard494 = /*[[${imageNumberBoard494}]]*/ 'default';
+            var imageTypeBoard495 = /*[[${imageTypeBoard495}]]*/ 'default';
+            var imageNumberBoard495 = /*[[${imageNumberBoard495}]]*/ 'default';
+
+            var imageTypeHand5011 = /*[[${imageTypeHand5011}]]*/ 'default';
+            var imageNumberHand5011 = /*[[${imageNumberHand5011}]]*/ 'default';
+            var imageTypeHand5012 = /*[[${imageTypeHand5012}]]*/ 'default';
+            var imageNumberHand5012 = /*[[${imageNumberHand5012}]]*/ 'default';
+            var imageTypeHand5021 = /*[[${imageTypeHand5021}]]*/ 'default';
+            var imageNumberHand5021 = /*[[${imageNumberHand5021}]]*/ 'default';
+            var imageTypeHand5022 = /*[[${imageTypeHand5022}]]*/ 'default';
+            var imageNumberHand5022 = /*[[${imageNumberHand5022}]]*/ 'default';
+            var imageTypeBoard501 = /*[[${imageTypeBoard501}]]*/ 'default';
+            var imageNumberBoard501 = /*[[${imageNumberBoard501}]]*/ 'default';
+            var imageTypeBoard502 = /*[[${imageTypeBoard502}]]*/ 'default';
+            var imageNumberBoard502 = /*[[${imageNumberBoard502}]]*/ 'default';
+            var imageTypeBoard503 = /*[[${imageTypeBoard503}]]*/ 'default';
+            var imageNumberBoard503 = /*[[${imageNumberBoard503}]]*/ 'default';
+            var imageTypeBoard504 = /*[[${imageTypeBoard504}]]*/ 'default';
+            var imageNumberBoard504 = /*[[${imageNumberBoard504}]]*/ 'default';
+            var imageTypeBoard505 = /*[[${imageTypeBoard505}]]*/ 'default';
+            var imageNumberBoard505 = /*[[${imageNumberBoard505}]]*/ 'default';
+        
+        /*]]>*/
+
+        makeHands(50, 2);  
+    </script>
+        
+</body>
+
+</html>

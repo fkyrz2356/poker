@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <h1 class="mt-5 text-center" th:text="${user.id}+'さんのマイページ'"></h1>
+                <div class="container mt-5">
+                    <div class="alert alert-success" role="alert">
+                       <h4 class="alert-heading text-center">
+                         <span th:if="${notChallenge}">本日分(<span th:text="${#dates.format(#dates.createNow(), 'M/d')}"></span>)のチャレンジをまだ受けていません！</span>
+                         <span th:if="${!notChallenge}">本日(<span th:text="${#dates.format(#dates.createNow(), 'M/d')}"></span>)のチャレンジ結果：<b><span th:text="${score}"></span>点</b>！</span>
+                       </h4>
+                    </div>
+                 </div><br>
+                 
+                <h5 class="text-center">練習したいモードを選択してください</h5>
+                <div class="row">
+                    <div class="col">
+                        <form th:action="@{/startPractice}" method="post">
+                            <button type="submit" class="btn btn-secondary mt-3 btn-block btn-lg w-100" disabled>1Player</button>
+                        </form>                        
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary mt-3 btn-block btn-lg w-100" data-toggle="modal" data-target="#countdownModal">2Players</button>
+                    </div>
+                    <div class="col">
+                        <button type="button" 
+                                class="btn mt-3 btn-block btn-lg w-100" 
+                                th:classappend="${notChallenge} ? 'btn-primary' : 'btn-secondary'" 
+                                th:disabled="${!notChallenge}" 
+                                data-toggle="modal" 
+                                data-target="#challengeModal">
+                                Challenge
+                        </button>
+                       </div>
+                       
+                </div>
+            </div>
+        </div>
+    </div><hr><br>
+    
+
+    <div class="container">
+        <h2 class="text-center">本日(<span th:text="${date}"></span>)のチャレンジランキング</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">順位</th>
+                    <th scope="col">ユーザID</th>
+                    <th scope="col">得点</th>
+                    <th scope="col">残り時間</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="result, stat : ${results}" th:class="${result.userID == user.id} ? 'table-primary' : ''">
+                    <th scope="row" th:text="${stat.count}"></th>
+                    <td th:if="${stat.count le participate || result.userID == user.id}" th:text="${result.userID}"></td>
+                    <td th:if="${stat.count gt participate && result.userID != user.id}">********</td>
+                    <td th:text="${result.solved} + '点'"></td>
+                    <td th:if="${result.solved == 50}" th:text="${result.restTime} + '秒'"></td>
+                    <td th:if="${result.solved != 50}">----</td>
+                </tr>
+            </tbody>
+        </table>
+    </div><hr>
+    
+    
+    
+    
+    <!-- Your HTML content goes here -->
+    <div class="container mt-5">
+        <h3 class="text-center">Poker役判定練習サービス アップデート情報</h3>
+        <div id="accordion">
+
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <a class="card-link text-white" data-toggle="collapse" href="#collapse020000">
+                        <h4 class="mb-0">ver2.0.0 - 2023年6月7日</h4>
+                    </a>
+                </div>
+                <div id="collapse020000" class="collapse show" data-parent="#accordion">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"><b>【機能追加・機能改善】</b></h5>
+                            <ul class="card-text">
+                                <li>"Challenge"モードを追加しました。
+                                    <ul>
+                                        <li>このモードは1日1回しかチャレンジできないモードで、順位がつけられます。</li>
+                                        <li>詳しくは、Challengeモードをスタートする際の"ルール"をご覧ください。</li>
+                                    </ul>
+                                </li>
+                                <li>ログイン機能を追加しました。
+                                    <ul>
+                                        <li>セキュリティ対策は行っていないので、普段使用しないPWを登録することをお勧めします。</li>
+                                        <li>一人一アカウントを原則としています。</li>
+                                        <li>ID, PWが分からなくなった場合はお知らせください。</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div class="card">
+                <div class="card-header">
+                    <a class="collapsed card-link" data-toggle="collapse" href="#collapse010302">
+                        ver1.3.2 - 2023年5月31日
+                    </a>
+                </div>
+                <div id="collapse010302" class="collapse" data-parent="#accordion">
+                    <div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title"><b>【不具合の修正】</b></h5>
+                          <p class="card-text">Aを含むツーペアの判定においてミスジャッジが発生する問題を修正しました</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 以下のカードを他のバージョンのために繰り返す -->
+            <div class="card">
+                <div class="card-header">
+                    <a class="collapsed card-link" data-toggle="collapse" href="#collapse010301">
+                        ver1.3.1 - 2023年5月31日
+                    </a>
+                </div>
+                <div id="collapse010301" class="collapse" data-parent="#accordion">
+                    <div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title"><b>【不具合の修正】</b></h5>
+                          <p class="card-text">表記ずれを修正しました</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 他のアップデート情報を追加 -->
+            <div class="card">
+                <div class="card-header">
+                    <a class="collapsed card-link" data-toggle="collapse" href="#collapse010300">
+                        ver1.3.0 - 2023年5月30日
+                    </a>
+                </div>
+                <div id="collapse010300" class="collapse" data-parent="#accordion">
+                    <div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title"><b>【機能追加・機能改善】</b></h5>
+                          <p class="card-text">制限時間を設けることができるようになりました</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <a class="collapsed card-link" data-toggle="collapse" href="#collapse010202">
+                        ver1.2.2 - 2023年5月27日
+                    </a>
+                </div>
+                <div id="collapse010202" class="collapse" data-parent="#accordion">
+                    <div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title"><b>【不具合の修正】</b></h5>
+                          <p class="card-text">２ペアの判定において、Aペア以外に2つのペアがあった時にミスジャッジをしている問題を修正しました</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <a class="collapsed card-link" data-toggle="collapse" href="#collapse010201">
+                        ver1.2.1 - 2023年5月27日
+                    </a>
+                </div>
+                <div id="collapse010201" class="collapse" data-parent="#accordion">
+                    <div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title"><b>【不具合の修正】</b></h5>
+                          <p class="card-text">解答を行った際に○×表記が崩れてしまう問題を修正しました</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <a class="collapsed card-link" data-toggle="collapse" href="#collapse010200">
+                        ver1.2.0 - 2023年5月25日
+                    </a>
+                </div>
+                <div id="collapse010200" class="collapse" data-parent="#accordion">
+                    <div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title"><b>【機能追加・機能改善】</b></h5>
+                          <p class="card-text">2playersで役判定を行う際、ボタンにて解答できるようになりました</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <a class="collapsed card-link" data-toggle="collapse" href="#collapse010100">
+                        ver1.1.0 - 2023年5月23日
+                    </a>
+                </div>
+                <div id="collapse010100" class="collapse" data-parent="#accordion">
+                    <div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title"><b>【機能追加・機能改善】</b></h5>
+                          <p class="card-text">2playersでの役判定練習サービスを実装しました</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <a class="collapsed card-link" data-toggle="collapse" href="#collapse010000">
+                        ver1.0.0 - 2023年5月21日
+                    </a>
+                </div>
+                <div id="collapse010000" class="collapse" data-parent="#accordion">
+                    <div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title"><b>【機能追加・機能改善】</b></h5>
+                          <p class="card-text">Poker役判定練習サービスを公開しました</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><br><br>
+
+    <!-- Countdown Modal -->
+    <div class="modal fade" id="countdownModal" tabindex="-1" role="dialog" aria-labelledby="countdownModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form th:action="@{/twoPlayers}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="countdownModalLabel">制限時間の設定</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        制限時間を設定してください。
+                        <select id="countdown" name="countdown" class="form-control">
+                            <option th:each="sec : ${#numbers.sequence(1, 200)}" th:value="${sec/10.0}" th:text="${sec/10.0 + '秒'}" th:selected="${sec == 100}"></option>
+                        </select>                                       
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button id="countdown-ok" type="submit" class="btn btn-primary">OK</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="challengeModal" tabindex="-1" role="dialog" aria-labelledby="challengeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="font-weight:bold" th:text="${#dates.format(#dates.createNow(), 'M/d')} + ' Challenge'"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Challengeは<strong>1日1回のみ</strong>しか挑戦できません！</p>
+                    <h5>ルール：</h5>
+                    <ul>
+                        <li>最初の持ち時間は60秒です。</li>
+                        <li>制限時間内に多くの問題を解いた方が勝ちです。</li>
+                        <li>正解すると、制限時間が2秒増えます。</li>
+                        <li>問題の中身は全プレイヤー同じです。</li>
+                        <li><span style="color: red;">役判定に失敗すると、<b>即終了</b>です。</span></li>
+                        <li>最大で50問です。50問全て解き終わったら、残り時間の多い方が勝ちです。</li>
+                        <li>ボタンを押してから10秒後に始まります。その間に画面のサイズを調整してください。</li>
+                    </ul>
+                    <p style="color: red;"><b>本当にChallengeを行いますか？</b></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <form th:action="@{/challenge}" method="post">
+                        <input type="hidden" name="currentDate" th:value="${#dates.format(#dates.createNow(), 'yyyyMMdd')}">
+                        <button type="submit" class="btn btn-primary">Challengeする</button>
+                    </form>                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    
+</body>
+</html>
