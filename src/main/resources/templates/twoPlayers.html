@@ -49,7 +49,10 @@
         </div>
         <h2><span id="judgeHandmain01" style="display: none;"></span></h2>
         <h3><span id="judgeHandsub01" style="display: none;"></span></h3>
-        <button class="btn btn-secondary" id="next-button" onclick="ReloadOrAnsDisplay()">Next...</button>
+        <form action="/twoPlayers" method="post">
+            <input type="hidden" id="countdown" name="countdown" th:value="${countdownInit}">
+            <button type="submit" class="btn btn-secondary" id="next-button">Next...</button>
+        </form>        
         <div id="circle01" class="circle"></div>
         <div id="cross01" class="cross"></div>
     </div>
@@ -79,7 +82,7 @@
             var imageNumberBoard015 = /*[[${imageNumberBoard015}]]*/ 'default';
         /*]]>*/
     
-        makeHands(1, 2);        
+        makeHands(1, 2);       
     </script>
 
     <!-- モーダル -->
