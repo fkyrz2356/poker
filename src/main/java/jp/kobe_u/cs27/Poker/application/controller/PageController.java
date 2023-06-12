@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import jakarta.servlet.http.HttpSession;
+import java.time.LocalDate;
 
 import jp.kobe_u.cs27.Poker.application.bean.Card;
 import jp.kobe_u.cs27.Poker.application.Service.CardService;
@@ -14,6 +15,8 @@ import jp.kobe_u.cs27.Poker.application.bean.User;
 import jp.kobe_u.cs27.Poker.application.bean.BoardInfo;
 import jp.kobe_u.cs27.Poker.application.repository.BoardInfoRepository;
 import org.springframework.web.bind.annotation.RequestParam;
+import java.time.format.DateTimeFormatter;
+
 
 @Controller
 public class PageController {
@@ -118,6 +121,14 @@ public class PageController {
 					// Save the new BoardInfo object to the database
     				boardInfoRepository.save(boardInfo);
 				}
+			}
+
+			LocalDate oneMonthAgo = LocalDate.now().minusWeeks(1);
+			String formattedOneMonthAgo = oneMonthAgo.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+			List<BoardInfo> oldBoardInfos = boardInfoRepository.findByDateLessThan(formattedOneMonthAgo);
+			for (BoardInfo oldBoardInfo : oldBoardInfos) {
+				boardInfoRepository.delete(oldBoardInfo);
 			}
 		}
 

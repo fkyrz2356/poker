@@ -7,4 +7,5 @@ import java.util.List;
 public interface BoardInfoRepository extends CrudRepository<BoardInfo, Long> {
     List<BoardInfo> findByDateAndTypeOrderByBoardNumberAsc(String date, String type);
     List<BoardInfo> findByDate(String date);
+    List<BoardInfo> findByDateLessThan(String date);
 }
