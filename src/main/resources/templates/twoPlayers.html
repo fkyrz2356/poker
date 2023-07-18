@@ -15,6 +15,14 @@
     <script th:src="@{/global_value.js}" type="text/javascript"></script>
 </head>
 
+<style>
+    body {
+        width: 600px;
+        transform-origin: 0 0;
+        margin: 0;
+    }
+</style>
+
 <body class="m-3">
     <h1>Poker 役判定練習 2Players</h1>
     <p>赤色カードがPlayer1のハンド、青色カードがPlayer2のハンド、下5枚がボードです。</p>
@@ -83,6 +91,35 @@
         /*]]>*/
     
         makeHands(1, 2);       
+    </script>
+
+    <script>
+    var change_scale = {
+        "containerWidth": 600,
+        "containerHeight": 800,
+        "function": function() {
+            "use strict";
+            var scaleWidth = document.documentElement.clientWidth / change_scale.containerWidth;
+            var scaleHeight = document.documentElement.clientHeight / change_scale.containerHeight;
+            var scale = Math.min(scaleWidth, scaleHeight);
+            scale = "scale(" + scale + ")";
+            document.body.style.transform = scale;
+            document.body.style.transformOrigin = "top left";
+        }
+    };
+
+    function resizeEvent() {
+        "use strict";
+        window.requestAnimationFrame(change_scale.function);
+    }
+
+    (function() {
+        "use strict";
+        resizeEvent();
+    }());
+
+    window.addEventListener("resize", resizeEvent);
+
     </script>
 
     <!-- モーダル -->
